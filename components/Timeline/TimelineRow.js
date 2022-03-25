@@ -1,22 +1,24 @@
-import React from 'react'
-import { View, Image, Text, StyleSheet } from 'react-native'
+import React from "react";
+import { View, Image, Text, StyleSheet } from "react-native";
 
 const TimelineRow = ({
   transactionType,
   timestamp,
   address,
   amount,
-  ticker
+  ticker,
 }) => {
-  const isSendTransaction = transactionType === 'Send'
+  const isSendTransaction = transactionType === "Send";
+  const addressDigits = 5;
+
   return (
-    <View style={style.container}>
+    <View style={styles.container}>
       <View style={styles.leftContainer}>
         <Image
-          source={require('../assets/downArrow.png')}
+          source={require("../../assets/downArrow.png")}
           style={[
             { height: 30, width: 30 },
-            isSendTransaction && { transform: [{ rotate: '180deg' }] }
+            isSendTransaction && { transform: [{ rotate: "180deg" }] },
           ]}
         />
         <View style={styles.transactionInformation}>
@@ -31,45 +33,45 @@ const TimelineRow = ({
       </View>
       <View style={styles.rightContainer}>
         <Text>
-          {isSendTransaction ? '-' : '+'}
+          {isSendTransaction ? "-" : "+"}
           {amount} {ticker}
         </Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default TimelineRow
+export default TimelineRow;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     height: 70,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   leftContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%'
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    height: "100%",
   },
   rightContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end'
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
   transactionInformation: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginLeft: 15
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginLeft: 15,
   },
   sendReceiveRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start'
-  }
-})
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+});

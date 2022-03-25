@@ -1,26 +1,25 @@
-import React from 'react'
-import moment from 'moment'
-import TimelineRow from './TimelineRow'
+import React from "react";
+import moment from "moment";
+import TimelineRow from "./TimelineRow";
 
 const Timeline = () => {
-  const now = new moment()
-  const addressDigits = 5
+  const now = new moment();
   const dummyTransactions = [
     {
-      transactionType: 'Send',
-      timestamp: now.format('MMM D') + ' at ' + now.format('HH:mm'),
-      address: '0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a',
+      transactionType: "Send",
+      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
+      address: "0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a",
       amount: 10,
-      ticker: 'PBC'
+      ticker: "PBC",
     },
     {
-      transactionType: 'Receive',
-      timestamp: now.format('MMM D') + ' at ' + now.format('HH:mm'),
-      address: '0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a',
+      transactionType: "Receive",
+      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
+      address: "0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a",
       amount: 40,
-      ticker: 'PBC'
-    }
-  ]
+      ticker: "PBC",
+    },
+  ];
 
   return (
     <>
@@ -34,10 +33,10 @@ const Timeline = () => {
             amount={transaction.amount}
             ticker={transaction.ticker}
           />
-        )
+        );
       })}
     </>
-  )
-}
+  );
+};
 
-export default Timeline
+export default Timeline;
