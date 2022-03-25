@@ -338,3 +338,6 @@ typings/
 node_modules/**/*
 .expo/*
 npm-debug.*
+
+# MacOS utility file
+.DS_Store
