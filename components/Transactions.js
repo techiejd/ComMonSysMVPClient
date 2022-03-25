@@ -53,7 +53,7 @@ export default function Transactions() {
                 onPress={toggleSending}
             a>
                 <Image
-                    source={require("../../assets/qrCode.png")}
+                    source={require("../assets/qrCode.png")}
                     style={styles.full}
                 />
             </Pressable>

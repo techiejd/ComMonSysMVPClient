@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { SafeAreaView, Platform, StatusBar } from 'react-native';
 
-import Transactions from './components/transactions/transactions';
-import ShopsMap from './components/shops/shops';
+import Transactions from './components/Transactions';
+import ShopsMap from './components/Shops';
 
 export default class App extends Component{
   render() {
