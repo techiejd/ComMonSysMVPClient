@@ -1,7 +1,5 @@
 import React from 'react'
-import { View, Image, Text, StyleSheet } from 'react-native'
 import moment from 'moment'
-import ArrowDown from './svgs/ArrowDown'
 import TimelineRow from './TimelineRow'
 
 const Timeline = () => {

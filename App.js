@@ -1,5 +1,11 @@
 import React from 'react'
-import { SafeAreaView, ScrollView, Platform, StatusBar } from 'react-native'
+import {
+  SafeAreaView,
+  ScrollView,
+  Platform,
+  StatusBar,
+  StyleSheet
+} from 'react-native'
 
 import Transactions from './components/Transactions'
 import ShopsMap from './components/Shops'
@@ -8,15 +14,12 @@ import Spacer from './components/Spacer'
 
 const App = () => {
   return (
-    <SafeAreaView>
-      <ScrollView
-        contentContainerStyle={{
-          flexDirection: 'column',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
-        }}
-      >
+    <SafeAreaView
+      style={{
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+      }}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
         <Transactions />
         <Spacer />
         <ShopsMap />
@@ -28,3 +31,11 @@ const App = () => {
 }
 
 export default App
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  }
+})
