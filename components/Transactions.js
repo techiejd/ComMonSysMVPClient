@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Image, Text, View, StyleSheet, Picker, Pressable } from "react-native";
-import {Camera} from 'expo-camera';
+import { Camera } from "expo-camera";
 
 export default function Transactions() {
-
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [sending, setSending] = useState(true);
 
   const toggleSending = () => {
     setSending(!sending);
-}
+  };
 
   useEffect(() => {
     (async () => {
@@ -34,31 +33,26 @@ export default function Transactions() {
   return (
     <View>
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
-              <Picker.Item label="Poblado | $30K" value="poblado" />
-              <Picker.Item label="ComMonSys | $33K" value="commonsys" />
+        <Picker.Item label="Poblado | $30K" value="poblado" />
+        <Picker.Item label="ComMonSys | $33K" value="commonsys" />
       </Picker>
-      <View
-        style={styles.qrLike}
-      >
+      <View style={styles.qrLike}>
         {sending ? (
-                <Camera onBarCodeScanned={handleBarCodeScanned} style={styles.full} autoFocus={'on'}>
-                    <Pressable
-                        style={styles.full}
-                        onPress={toggleSending}
-                    />
-                </Camera>
+          <Camera
+            onBarCodeScanned={handleBarCodeScanned}
+            style={styles.full}
+            autoFocus={"on"}
+          >
+            <Pressable style={styles.full} onPress={toggleSending} />
+          </Camera>
         ) : (
-            <Pressable
-                style={styles.full}
-                onPress={toggleSending}
-            a>
-                <Image
-                    source={require("../assets/qrCode.png")}
-                    style={styles.full}
-                />
-            </Pressable>
-        )
-        }
+          <Pressable style={styles.full} onPress={toggleSending} a>
+            <Image
+              source={require("../assets/qrCode.png")}
+              style={styles.full}
+            />
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -72,11 +66,11 @@ const styles = StyleSheet.create({
     color: "black",
   },
   qrLike: {
-      width: 200,
-      height: 200,
+    width: 200,
+    height: 200,
   },
   full: {
-      width: "100%",
-      height: "100%",
+    width: "100%",
+    height: "100%",
   },
 });

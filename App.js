@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import { SafeAreaView, Platform, StatusBar } from 'react-native'
+import React, { Component } from "react";
+import { SafeAreaView, Platform, StatusBar } from "react-native";
 
-import Transactions from './components/Transactions'
-import ShopsMap from './components/Shops'
+import Transactions from "./components/Transactions";
+import ShopsMap from "./components/Shops";
 
 export default class App extends Component {
-  render () {
+  render() {
     /* <ShopsMap/>*/
     return (
       <>
         <SafeAreaView
           style={{
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
           }}
         >
           <Transactions />
@@ -22,6 +22,6 @@ export default class App extends Component {
           <Timeline />
         </SafeAreaView>
       </>
-    )
+    );
   }
 }
