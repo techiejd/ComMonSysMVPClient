@@ -1,77 +1,43 @@
 import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import TransactionRow from "./TransactionRow";
+import CommunityMessageRow from "./CommunityMessageRow";
 
-const TimelineRow = ({
-  transactionType,
-  timestamp,
-  address,
-  amount,
-  ticker,
-}) => {
-  const isSendTransaction = transactionType === "Send";
-  const addressDigits = 5;
+/*
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.leftContainer}>
-        <Image
-          source={require("../../assets/downArrow.png")}
-          style={[
-            { height: 30, width: 30 },
-            isSendTransaction && { transform: [{ rotate: "180deg" }] },
-          ]}
+{
+  type: "community_message" || "transaction",
+  timestamp: DateTime,
+  ...
+}
+
+*/
+
+const TimelineRow = ({ timelineData }) => {
+  switch (timelineData.type) {
+    case "transaction":
+      return (
+        <TransactionRow
+          transactionType={timelineData.transactionType}
+          timestamp={timelineData.timestamp}
+          address={timelineData.address}
+          amount={timelineData.amount}
+          ticker={timelineData.ticker}
         />
-        <View style={styles.transactionInformation}>
-          <View style={styles.sendReceiveRow}>
-            <Text>
-              {transactionType}: {address.slice(0, addressDigits + 2)}...
-              {address.slice(-addressDigits)}
-            </Text>
-          </View>
-          <Text>{timestamp}</Text>
-        </View>
-      </View>
-      <View style={styles.rightContainer}>
-        <Text>
-          {isSendTransaction ? "-" : "+"}
-          {amount} {ticker}
-        </Text>
-      </View>
-    </View>
-  );
+      );
+    case "community_message":
+      return (
+        <CommunityMessageRow
+          message={timelineData.message}
+          community={timelineData.community}
+          timestamp={timelineData.timestamp}
+        />
+      );
+    default:
+      return <View />;
+  }
 };
 
 export default TimelineRow;
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    height: 70,
-    paddingHorizontal: 15,
-  },
-  leftContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    height: "100%",
-  },
-  rightContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
-  },
-  transactionInformation: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    marginLeft: 15,
-  },
-  sendReceiveRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-});
+const styles = StyleSheet.create({});
