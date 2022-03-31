@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   StyleSheet,
   Pressable,
   Modal,
-  TextInput
-} from 'react-native'
+  TextInput,
+} from "react-native";
 
-export default function SendForm ({ visible, setVisible }) {
+export default function SendForm({ visible, setVisible }) {
   return (
     <Modal
-      animationType='slide'
+      animationType="slide"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
-        Alert.alert('Modal has been closed.')
-        setVisible(!visible)
+        Alert.alert("Modal has been closed.");
+        setVisible(!visible);
       }}
     >
       <View style={styles.centeredView}>
@@ -24,12 +24,12 @@ export default function SendForm ({ visible, setVisible }) {
           <Text style={styles.modalText}>Sending</Text>
           <Text style={styles.modalText}>0x8098098098</Text>
           <TextInput
-            keyboardType='number-pad'
+            keyboardType="number-pad"
             style={{
               width: 200,
               height: 40,
               borderWidth: 1,
-              borderColor: 'black'
+              borderColor: "black",
             }}
           />
           <Pressable
@@ -41,40 +41,40 @@ export default function SendForm ({ visible, setVisible }) {
         </View>
       </View>
     </Modal>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
   },
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 15,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
     height: 200,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonClose: {
-    backgroundColor: '#2196F3'
-  }
-})
+    backgroundColor: "#2196F3",
+  },
+});
