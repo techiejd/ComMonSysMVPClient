@@ -3,9 +3,21 @@ import { View, StyleSheet, Modal } from 'react-native'
 import SendMoneyForm from './SendMoneyForm'
 import SendVoteForm from './SendVoteForm'
 import ErrorForm from './ErrorForm'
+import URL from 'url-parse'
+import { ethers } from 'ethers'
+
+const commonsysOrigin = 'https://www.commonsys.tech'
+const commonsysQRPathName = '/qr'
+const commonsysTypes = ['eoa', 'voting']
 
 function isInvalid (data) {
-  return false
+  var url = new URL(data, true)
+  return !(
+    url.origin == commonsysOrigin &&
+    url.pathname == commonsysQRPathName &&
+    commonsysTypes.includes(url.query.type) &&
+    ethers.utils.isAddress(url.query.address)
+  )
 }
 function isVoting (data) {
   return false
