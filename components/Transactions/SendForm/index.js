@@ -7,8 +7,18 @@ import {
   Modal,
   TextInput,
 } from "react-native";
+import SendMoneyForm from "./SendMoneyForm";
+import SendVoteForm from "./SendVoteForm";
+import ErrorForm from "./ErrorForm";
 
-export default function SendForm({ visible, setVisible }) {
+function isInvalid(data) {
+  return true;
+}
+function isVoting(data) {
+  return true;
+}
+
+export default function SendForm({ visible, setVisible, data }) {
   return (
     <Modal
       animationType="slide"
@@ -21,23 +31,13 @@ export default function SendForm({ visible, setVisible }) {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Sending</Text>
-          <Text style={styles.modalText}>0x8098098098</Text>
-          <TextInput
-            keyboardType="number-pad"
-            style={{
-              width: 200,
-              height: 40,
-              borderWidth: 1,
-              borderColor: "black",
-            }}
-          />
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => setVisible(!visible)}
-          >
-            <Text style={styles.textStyle}>Hide Modal</Text>
-          </Pressable>
+          {isInvalid(data) ? (
+            <ErrorForm />
+          ) : isVoting(data) ? (
+            <SendVoteForm />
+          ) : (
+            <SendMoneyForm />
+          )}
         </View>
       </View>
     </Modal>
@@ -68,13 +68,5 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
   },
 });

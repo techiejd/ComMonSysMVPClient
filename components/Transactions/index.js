@@ -14,7 +14,8 @@ import SendForm from "./SendForm";
 
 export default function Transactions() {
   const [hasPermission, setHasPermission] = useState(null);
-  const [sendFormVisible, setSendFormVisible] = useState(false);
+  const [sendFormVisible, setSendFormVisible] = useState(true);
+  const [sendFormData, setSendFormData] = useState("");
   const [sendingMode, setSendingMode] = useState(true);
 
   const toggleSending = () => {
@@ -49,7 +50,11 @@ export default function Transactions() {
         justifyContent: "center",
       }}
     >
-      <SendForm visible={sendFormVisible} setVisible={setSendFormVisible} />
+      <SendForm
+        visible={sendFormVisible}
+        setVisible={setSendFormVisible}
+        data={sendFormData}
+      />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item label="Poblado | $30K" value="poblado" />
         <Picker.Item label="ComMonSys | $33K" value="commonsys" />
