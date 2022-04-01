@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { Image, Text, View, StyleSheet, Pressable } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { Camera } from 'expo-camera'
+import ERC20ABI from '../../constants/ERC20ABI'
 import SendForm from './SendForm'
 
 const Transactions = () => {
@@ -11,20 +12,38 @@ const Transactions = () => {
   const [sendFormVisible, setSendFormVisible] = useState(false)
   const [sendFormData, setSendFormData] = useState('')
   const [sendingMode, setSendingMode] = useState(true)
-  const [balance, setBalance] = useState(null)
+  const [comsBalance, setComsBalance] = useState(null)
+  const [pcBalance, setPCBalance] = useState(null)
 
-  const p = new ethers.providers.JsonRpcProvider({
+  // TODO(techiejd): Create and save the users' address.
+  const userAddress = '0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a' // JD's public ComMonSys MVP Ethereum address
+  // TODO(techijd): Maybe move this out of here and to the constants/ file.
+  const communityCoinAddress = '0x9a1a38d91A0844E76A0e8262b0965c83536b7892'
+
+  const provider = new ethers.providers.JsonRpcProvider({
     url: 'https://137.184.238.79/rpc',
     timeout: 15000
   })
 
   useEffect(() => {
     ;(async () => {
-      const balance = await p.getBalance(
-        // TODO(techiejd): Create and save the users' address.
-        '0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a' // JD's public ComMonSys MVP Ethereum address
+      provider
+        .getBalance(userAddress)
+        .then(balance => setComsBalance(balance))
+        .catch(error => alert(error))
+
+      communityCoinContract = new ethers.Contract(
+        communityCoinAddress,
+        ERC20ABI,
+        provider
       )
-      setBalance(balance)
+
+      console.log(communityCoinContract)
+
+      communityCoinContract.callStatic
+        .balanceOf(userAddress)
+        .then(balance => setPCBalance(balance))
+        .catch(error => alert(error))
     })()
   }, [])
 
@@ -52,6 +71,9 @@ const Transactions = () => {
   }
 
   const composeBalance = balance => {
+    if (!sendingMode) {
+      return '❓'
+    }
     return balance == null
       ? '✋⏳'
       : ethers.utils.commify(Math.floor(ethers.utils.formatEther(balance)))
@@ -71,9 +93,12 @@ const Transactions = () => {
         data={sendFormData}
       />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
-        <Picker.Item label='Poblado | $30K' value='poblado' />
         <Picker.Item
-          label={`ComMonSys | $` + composeBalance(balance)}
+          label={`Poblado | $` + composeBalance(pcBalance)}
+          value='poblado'
+        />
+        <Picker.Item
+          label={`ComMonSys | $` + composeBalance(comsBalance)}
           value='commonsys'
         />
       </Picker>
