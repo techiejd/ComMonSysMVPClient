@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Image,
-  Text,
-  View,
-  StyleSheet,
-  Pressable,
-  Modal,
-  TextInput
-} from 'react-native'
+import '@ethersproject/shims'
+import { ethers } from 'ethers'
+import { Image, Text, View, StyleSheet, Pressable } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 import { Camera } from 'expo-camera'
 import SendForm from './SendForm'
 
-export default function Transactions () {
+const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null)
   const [sendFormVisible, setSendFormVisible] = useState(false)
   const [sendFormData, setSendFormData] = useState('')
   const [sendingMode, setSendingMode] = useState(true)
+  const [balance, setBalance] = useState(null)
+
+  const p = new ethers.providers.JsonRpcProvider({
+    url: 'https://137.184.238.79/rpc',
+    timeout: 15000
+  })
+
+  useEffect(() => {
+    ;(async () => {
+      const balance = await p.getBalance(
+        // TODO(techiejd): Create and save the users' address.
+        '0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a' // JD's public ComMonSys MVP Ethereum address
+      )
+      setBalance(balance)
+    })()
+  }, [])
 
   const toggleSending = () => {
     setSendingMode(!sendingMode)
@@ -41,6 +51,12 @@ export default function Transactions () {
     return <Text>No access to camera</Text>
   }
 
+  const composeBalance = balance => {
+    return balance == null
+      ? '✋⏳'
+      : ethers.utils.commify(Math.floor(ethers.utils.formatEther(balance)))
+  }
+
   return (
     <View
       style={{
@@ -56,7 +72,10 @@ export default function Transactions () {
       />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item label='Poblado | $30K' value='poblado' />
-        <Picker.Item label='ComMonSys | $33K' value='commonsys' />
+        <Picker.Item
+          label={`ComMonSys | $` + composeBalance(balance)}
+          value='commonsys'
+        />
       </Picker>
       <View style={styles.qrLike}>
         {sendingMode ? (
@@ -79,6 +98,8 @@ export default function Transactions () {
     </View>
   )
 }
+
+export default Transactions
 
 const styles = StyleSheet.create({
   picker: {
