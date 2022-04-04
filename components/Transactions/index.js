@@ -38,8 +38,6 @@ const Transactions = () => {
         provider
       );
 
-      console.log(communityCoinContract);
-
       communityCoinContract.callStatic
         .balanceOf(userAddress)
         .then((balance) => setPCBalance(balance))
@@ -94,7 +92,7 @@ const Transactions = () => {
       />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
-          label={`Poblado | $` + composeBalance(pcBalance)}
+          label={`₱oblado | ` + composeBalance(pcBalance)}
           value="poblado"
         />
         <Picker.Item
