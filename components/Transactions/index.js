@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Image, Text, View, StyleSheet, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Camera } from "expo-camera";

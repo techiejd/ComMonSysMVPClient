@@ -1,9 +1,9 @@
-import React, { useContext, useReducer, useState } from "react";
+import React, { useContext, useState } from "react";
 import "@ethersproject/shims";
 import { ethers } from "ethers";
-import ERC20ABI from "../../constants/ERC20ABI";
-import { CommunityCoinAddress } from "../../constants/Contracts";
-import { BlockchainContext } from "../BlockchainProvider";
+import ERC20ABI from "../constants/ERC20ABI";
+import { CommunityCoinAddress } from "../constants/Contracts";
+import { BlockchainContext } from "./BlockchainProvider";
 
 const TransactionsContext = React.createContext();
 
