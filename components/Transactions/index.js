@@ -3,26 +3,21 @@ import { Image, Text, View, StyleSheet, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Camera } from "expo-camera";
 import SendForm from "./SendForm";
-import { useBalances } from "./hooks";
+import { TransactionsContext } from "../../providers/TransactionsProvider";
 
 const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [sendFormVisible, setSendFormVisible] = useState(false);
   const [sendFormData, setSendFormData] = useState("");
-  const [transactionMode, setTransactionMode] = useState("sending"); // sending || receiving
-  const balances = useBalances();
 
-  const toggleSending = () => {
-    transactionMode == "sending"
-      ? setTransactionMode("receiving")
-      : setTransactionMode("sending");
-  };
+  const { load, mode, setMode, balances } = useContext(TransactionsContext);
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+    load();
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
@@ -38,10 +33,13 @@ const Transactions = () => {
   }
 
   const composeBalance = (balance) => {
-    if (transactionMode == "receiving") {
+    if (mode == "receiving") {
       return "❓";
     }
-    return balance == null ? "✋⏳" : balance;
+    if (mode == "loading" || mode == "unset") {
+      return "✋⏳";
+    }
+    return balance;
   };
 
   return (
@@ -59,25 +57,36 @@ const Transactions = () => {
       />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
-          label={`₱oblado | ` + composeBalance(balances.pc)}
+          label={`₱oblado | ` + composeBalance(balances.posted.pc)}
           value="poblado"
         />
         <Picker.Item
-          label={`ComMonSys | $` + composeBalance(balances.coms)}
+          label={`ComMonSys | $` + composeBalance(balances.posted.coms)}
           value="commonsys"
         />
       </Picker>
       <View style={styles.qrLike}>
-        {transactionMode == "sending" ? (
+        {mode == "sending" ? (
           <Camera
             onBarCodeScanned={handleBarCodeScanned}
             style={styles.full}
             autoFocus={"on"}
           >
-            <Pressable style={styles.full} onPress={toggleSending} />
+            <Pressable
+              style={styles.full}
+              onPress={() => {
+                setMode("receiving");
+              }}
+            />
           </Camera>
         ) : (
-          <Pressable style={styles.full} onPress={toggleSending} a>
+          <Pressable
+            style={styles.full}
+            onPress={() => {
+              setMode("sending");
+            }}
+            a
+          >
             <Image
               source={require("../../assets/qrCode.png")}
               style={styles.full}
