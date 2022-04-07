@@ -1,8 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import "@ethersproject/shims";
-import { ethers } from "ethers";
-import ERC20ABI from "../constants/ERC20ABI";
-import { CommunityCoinAddress, GasLimit } from "../constants/Contracts";
 import { BlockchainContext } from "./BlockchainProvider";
 
 const TransactionsContext = React.createContext();
@@ -17,21 +13,16 @@ const TransactionsContext = React.createContext();
 //   send: ()
 // }
 
-const prettify = (balance) => {
-  return ethers.utils.commify(Math.floor(ethers.utils.formatEther(balance)));
-};
-
-const unprettify = (amount) => {
-  return ethers.utils.parseEther(amount);
-};
-
 const TransactionsProvider = ({ children }) => {
-  const { signer } = useContext(BlockchainContext);
-  const communityCoinContract = new ethers.Contract(
-    CommunityCoinAddress,
-    ERC20ABI,
-    signer
-  );
+  const { signer, communityCoinContract, utils, gasLimit } =
+    useContext(BlockchainContext);
+  const prettify = (balance) => {
+    return utils.commify(Math.floor(utils.formatEther(balance)));
+  };
+
+  const unprettify = (amount) => {
+    return utils.parseEther(amount);
+  };
 
   const [mode, setMode] = useState("unset");
 
@@ -71,7 +62,7 @@ const TransactionsProvider = ({ children }) => {
         return;
       case "money":
         communityCoinContract
-          .transfer(to, unprettify(amount), { gasLimit: GasLimit })
+          .transfer(to, unprettify(amount), { gasLimit: gasLimit })
           .then((result) => {
             console.log(result);
           })
