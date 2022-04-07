@@ -51,7 +51,7 @@ const TransactionsProvider = ({ children }) => {
           .then((pcPostedBalance) => {
             setBalances({
               ...balances,
-              posted: { coms: comsPostedBalance, pc: pcPostedBalance },
+              posted: { coms: prettify(comsPostedBalance), pc: prettify(pcPostedBalance) },
             });
             setMode("loaded");
           });
