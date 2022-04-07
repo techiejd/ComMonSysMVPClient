@@ -58,7 +58,7 @@ const Transactions = () => {
       />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
-          label={`₱oblado | ` + composeBalance(balances.posted.pc)}
+          label={`₱oblado | $` + composeBalance(balances.posted.pc)}
           value="poblado"
         />
         <Picker.Item
