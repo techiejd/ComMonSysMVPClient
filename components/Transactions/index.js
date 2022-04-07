@@ -10,9 +10,8 @@ const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [sendFormVisible, setSendFormVisible] = useState(false);
   const [sendFormData, setSendFormData] = useState("");
-  
-  const { mode, setMode, balances } = useContext(TransactionsContext);
 
+  const { mode, setMode, balances } = useContext(TransactionsContext);
 
   useEffect(() => {
     (async () => {
