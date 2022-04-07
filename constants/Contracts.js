@@ -1,4 +1,5 @@
-const CommunityCoinAddress = "0x39CD662e57ce7e3317ba37CD181085A2aD5453CF";
 const GasLimit = 150000;
+const FaucetAdress = "0x54CDD73E928AF8647612dB979Da89FdB539AFfEf";
+const CommunityCoinAddress = FaucetAdress;
 
-export { CommunityCoinAddress };
+export { CommunityCoinAddress, FaucetAdress };
