@@ -10,20 +10,53 @@ const commonsysOrigin = "https://www.commonsys.tech";
 const commonsysQRPathName = "/qr";
 const commonsysTypes = ["eoa", "voting"];
 
-function isInvalid(data) {
+function transform(data) {
+  function isVoting(data) {
+    return false;
+  }
+
   var url = new URL(data, true);
-  return !(
+  const isInvalid = !(
     url.origin == commonsysOrigin &&
     url.pathname == commonsysQRPathName &&
     commonsysTypes.includes(url.query.type) &&
     ethers.utils.isAddress(url.query.address)
   );
-}
-function isVoting(data) {
-  return false;
+  const commonsysData = {};
+  commonsysData.type = isInvalid
+    ? "invalid"
+    : isVoting(data)
+    ? "send_vote"
+    : "send_money";
+  switch (commonsysData.type) {
+    case "send_vote":
+      // TODO: Add voting logic here.
+      break;
+    case "send_money":
+      commonsysData.sendTo = url.query.address;
+  }
+  return commonsysData;
 }
 
 export default function SendForm({ visible, setVisible, data }) {
+  const commonsysData = transform(data);
+  const showSendOn = (commonsysData) => {
+    switch (commonsysData.type) {
+      case "invalid":
+        return <ErrorForm />;
+      case "send_vote":
+        return <SendVoteForm />;
+      case "send_money":
+        return (
+          <SendMoneyForm
+            visible={visible}
+            setVisible={setVisible}
+            sendTo={commonsysData.sendTo}
+          />
+        );
+    }
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -35,15 +68,7 @@ export default function SendForm({ visible, setVisible, data }) {
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          {isInvalid(data) ? (
-            <ErrorForm />
-          ) : isVoting(data) ? (
-            <SendVoteForm />
-          ) : (
-            <SendMoneyForm />
-          )}
-        </View>
+        <View style={styles.modalView}>{showSendOn(commonsysData)}</View>
       </View>
     </Modal>
   );
