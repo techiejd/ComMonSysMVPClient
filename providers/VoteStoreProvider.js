@@ -20,3 +20,5 @@ const VoteStoreProvider = ({children})=>{
         </VoteStoreContext.Provider>
       );
 }
+export default VoteStoreProvider;
+export { VoteStoreContext };
