@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import "@ethersproject/shims";
 import { ethers } from "ethers";
 import ERC20ABI from "../constants/ERC20ABI";
-import { CommunityCoinAddress } from "../constants/Contracts";
+import { CommunityCoinAddress, GasLimit } from "../constants/Contracts";
 import { BlockchainContext } from "./BlockchainProvider";
 
 const TransactionsContext = React.createContext();
@@ -22,12 +22,16 @@ const prettify = (balance) => {
   return ethers.utils.commify(Math.floor(ethers.utils.formatEther(balance)));
 };
 
+const unprettify = (amount) => {
+  return ethers.utils.parseEther(amount);
+};
+
 const TransactionsProvider = ({ children }) => {
-  const { userAddress, provider } = useContext(BlockchainContext);
+  const { signer } = useContext(BlockchainContext);
   const communityCoinContract = new ethers.Contract(
     CommunityCoinAddress,
     ERC20ABI,
-    provider
+    signer
   );
 
   const [mode, setMode] = useState("unset");
@@ -39,11 +43,11 @@ const TransactionsProvider = ({ children }) => {
 
   const load = () => {
     setMode("loading");
-    provider
-      .getBalance(userAddress)
+    signer
+      .getBalance()
       .then((comsPostedBalance) => {
         communityCoinContract.callStatic
-          .balanceOf(userAddress)
+          .balanceOf(signer.address)
           .then((pcPostedBalance) => {
             setBalances({
               ...balances,
@@ -54,8 +58,20 @@ const TransactionsProvider = ({ children }) => {
       })
       .catch((error) => alert(error));
   };
+
+  const send = ({ to, amount }) => {
+    communityCoinContract
+      .transfer(to, unprettify(amount), {gasLimit: GasLimit})
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => alert(error));
+  };
+
   return (
-    <TransactionsContext.Provider value={{ mode, setMode, load, balances }}>
+    <TransactionsContext.Provider
+      value={{ mode, setMode, load, balances, send }}
+    >
       {children}
     </TransactionsContext.Provider>
   );

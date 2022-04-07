@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-export default function SendMoneyForm({ visible, setVisible, data }) {
+export default function SendMoneyForm({ visible, setVisible, sendTo }) {
+  const [amount, setAmount] = useState("");
+  const { send } = useContext(TransactionsContext);
+  const submit = () => {
+    send({ to: sendTo, amount: amount });
+    setVisible(!visible);
+  };
   return (
     <>
       <Text>Sending</Text>
-      <Text>0x8098098098</Text>
+      <Text>{sendTo}</Text>
       <TextInput
         keyboardType="number-pad"
+        onChangeText={(inputAmount) =>
+          setAmount(inputAmount.replace(/\D/g, ""))
+        }
+        onSubmitEditing={submit}
+        value={amount}
         style={{
           width: 200,
           height: 40,
@@ -15,10 +27,7 @@ export default function SendMoneyForm({ visible, setVisible, data }) {
           borderColor: "black",
         }}
       />
-      <Pressable
-        style={[styles.button, styles.buttonClose]}
-        onPress={() => setVisible(!visible)}
-      >
+      <Pressable style={[styles.button, styles.buttonClose]} onPress={submit}>
         <Text style={styles.textStyle}>Hide Modal</Text>
       </Pressable>
     </>
