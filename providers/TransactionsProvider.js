@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "@ethersproject/shims";
 import { ethers } from "ethers";
 import ERC20ABI from "../constants/ERC20ABI";
@@ -14,7 +14,6 @@ const TransactionsContext = React.createContext();
 //   },
 //   mode: 'unset' || 'loading' || 'sending' || 'pending' || 'receiving',
 //   modeDispatch: (action = {type: 'switch', data: {to: mode}}),
-//   load: (),
 //   send: ()
 // }
 
@@ -41,26 +40,29 @@ const TransactionsProvider = ({ children }) => {
     pending: { coms: null, pc: null },
   });
 
-  const load = () => {
-    setMode("loading");
-    signer
-      .getBalance()
-      .then((comsPostedBalance) => {
-        communityCoinContract.callStatic
-          .balanceOf(signer.address)
-          .then((pcPostedBalance) => {
-            setBalances({
-              ...balances,
-              posted: {
-                coms: prettify(comsPostedBalance),
-                pc: prettify(pcPostedBalance),
-              },
+  useEffect(() => {
+    const load = () => {
+      setMode("loading");
+      signer
+        .getBalance()
+        .then((comsPostedBalance) => {
+          communityCoinContract.callStatic
+            .balanceOf(signer.address)
+            .then((pcPostedBalance) => {
+              setBalances({
+                ...balances,
+                posted: {
+                  coms: prettify(comsPostedBalance),
+                  pc: prettify(pcPostedBalance),
+                },
+              });
+              setMode("sending");
             });
-            setMode("loaded");
-          });
-      })
-      .catch((error) => alert(error));
-  };
+        })
+        .catch((error) => alert(error));
+    };
+    load();
+  }, []);
 
   const send = ({ type, to, amount, choice }) => {
     switch (type) {
@@ -79,9 +81,7 @@ const TransactionsProvider = ({ children }) => {
   };
 
   return (
-    <TransactionsContext.Provider
-      value={{ mode, setMode, load, balances, send }}
-    >
+    <TransactionsContext.Provider value={{ mode, setMode, balances, send }}>
       {children}
     </TransactionsContext.Provider>
   );
