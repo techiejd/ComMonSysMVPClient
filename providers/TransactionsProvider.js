@@ -51,7 +51,10 @@ const TransactionsProvider = ({ children }) => {
           .then((pcPostedBalance) => {
             setBalances({
               ...balances,
-              posted: { coms: prettify(comsPostedBalance), pc: prettify(pcPostedBalance) },
+              posted: {
+                coms: prettify(comsPostedBalance),
+                pc: prettify(pcPostedBalance),
+              },
             });
             setMode("loaded");
           });
@@ -61,7 +64,7 @@ const TransactionsProvider = ({ children }) => {
 
   const send = ({ to, amount }) => {
     communityCoinContract
-      .transfer(to, unprettify(amount), {gasLimit: GasLimit})
+      .transfer(to, unprettify(amount), { gasLimit: GasLimit })
       .then((result) => {
         console.log(result);
       })
