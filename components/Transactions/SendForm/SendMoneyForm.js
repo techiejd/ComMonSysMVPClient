@@ -6,7 +6,7 @@ export default function SendMoneyForm({ visible, setVisible, sendTo }) {
   const [amount, setAmount] = useState("");
   const { send } = useContext(TransactionsContext);
   const submit = () => {
-    send({ to: sendTo, amount: amount });
+    send({ type: "money", to: sendTo, amount: amount });
     setVisible(!visible);
   };
   return (

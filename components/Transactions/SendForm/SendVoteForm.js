@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-export default function SendVoteForm({ visible, setVisible, data }) {
+export default function SendVoteForm({ visible, setVisible, campaignInfo }) {
+  const { send } = useContext(TransactionsContext);
+
   return (
     <>
       <Text>Confirm vote for</Text>
-      <Text>Project title</Text>
-      <Text>Project address:</Text>
-      <Text>0x1561651561561</Text>
+      <Text>Campaign address:</Text>
+      <Text>{campaignInfo.address}</Text>
+      <Text>Option: {campaignInfo.option}</Text>
       <Pressable
         style={[styles.button, styles.buttonClose]}
-        onPress={() => setVisible(!visible)}
+        onPress={() => {
+          send({
+            type: "vote",
+            to: campaignInfo.address,
+            choice: campaignInfo.option,
+          });
+          setVisible(!visible);
+        }}
       >
         <Text>Yes</Text>
       </Pressable>

@@ -21,7 +21,6 @@ const Transactions = () => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    console.log(data);
     setSendFormData(data);
     setSendFormVisible(true);
   };

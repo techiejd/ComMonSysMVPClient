@@ -8,29 +8,30 @@ import { ethers } from "ethers";
 
 const commonsysOrigin = "https://www.commonsys.tech";
 const commonsysQRPathName = "/qr";
-const commonsysTypes = ["eoa", "voting"];
+const commonsysTypes = ["eoa", "campaign"];
 
 function transform(data) {
-  function isVoting(data) {
-    return false;
-  }
-
   var url = new URL(data, true);
+
   const isInvalid = !(
     url.origin == commonsysOrigin &&
     url.pathname == commonsysQRPathName &&
     commonsysTypes.includes(url.query.type) &&
     ethers.utils.isAddress(url.query.address)
   );
+
   const commonsysData = {};
   commonsysData.type = isInvalid
     ? "invalid"
-    : isVoting(data)
+    : url.query.type == "campaign"
     ? "send_vote"
     : "send_money";
   switch (commonsysData.type) {
     case "send_vote":
-      // TODO: Add voting logic here.
+      commonsysData.campaignInfo = {
+        address: url.query.address,
+        option: url.query.option,
+      };
       break;
     case "send_money":
       commonsysData.sendTo = url.query.address;
@@ -43,9 +44,15 @@ export default function SendForm({ visible, setVisible, data }) {
   const showSendOn = (commonsysData) => {
     switch (commonsysData.type) {
       case "invalid":
-        return <ErrorForm />;
+        return <ErrorForm visible={visible} setVisible={setVisible} />;
       case "send_vote":
-        return <SendVoteForm />;
+        return (
+          <SendVoteForm
+            visible={visible}
+            setVisible={setVisible}
+            campaignInfo={commonsysData.campaignInfo}
+          />
+        );
       case "send_money":
         return (
           <SendMoneyForm
