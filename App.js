@@ -13,6 +13,7 @@ import Timeline from "./components/Timeline";
 import Spacer from "./components/Spacer";
 import BlockchainProvider from "./providers/BlockchainProvider";
 import TransactionsProvider from "./providers/TransactionsProvider";
+import TimelineProvider from "./providers/TimelineProvider";
 
 const App = () => {
   return (
@@ -29,7 +30,9 @@ const App = () => {
           <Spacer />
           <ShopsMap />
           <Spacer />
-          <Timeline />
+          <TimelineProvider>
+            <Timeline />
+          </TimelineProvider>
         </BlockchainProvider>
       </ScrollView>
     </SafeAreaView>

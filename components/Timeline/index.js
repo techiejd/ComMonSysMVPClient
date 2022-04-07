@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import TimelineRow from "./TimelineRow";
-import TimelineRepository from "./TimelineRepository";
+import { TimelineContext } from "../../providers/TimelineProvider";
 
 const Timeline = () => {
-  const timelineRepo = new TimelineRepository();
+  const { timelineData } = useContext(TimelineContext);
   return (
     <>
-      {timelineRepo.getAll().map((transaction, i) => {
+      {timelineData.map((timelineDatum, i) => {
         return (
-          <TimelineRow key={`${i}_transactionRow`} timelineData={transaction} />
+          <TimelineRow key={`${i}_timelineRow`} timelineData={timelineDatum} />
         );
       })}
     </>

@@ -1,18 +1,21 @@
+import React, { useState } from "react";
 import moment from "moment";
 
 /*
 TimelineObject
 {
-  type: "any",
+  type: transaction || community message,
   timestamp: DateTime,
   ...
 }
 
 */
 
-function TimelineRepository() {
+const TimelineContext = React.createContext();
+
+const TimelineProvider = ({ children }) => {
   const now = new moment();
-  this.getAll = () => [
+  const hardCodedTimeline = [
     {
       type: "transaction",
       transactionType: "Send",
@@ -43,6 +46,15 @@ function TimelineRepository() {
       community: "Poblado",
     },
   ];
-}
 
-export default TimelineRepository;
+  const [timelineData, setTimelineData] = useState(hardCodedTimeline);
+
+  return (
+    <TimelineContext.Provider value={{ timelineData }}>
+      {children}
+    </TimelineContext.Provider>
+  );
+};
+
+export default TimelineProvider;
+export { TimelineContext };
