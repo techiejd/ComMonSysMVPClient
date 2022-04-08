@@ -4,8 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Camera } from "expo-camera";
 import SendForm from "./SendForm";
 import { TransactionsContext } from "../../providers/TransactionsProvider";
-import { BlockchainContext } from "../../providers/BlockchainProvider";
-import QRCode from "react-native-qrcode-svg";
+import QRCode from 'react-native-qrcode-svg';
 
 const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -13,9 +12,7 @@ const Transactions = () => {
   const [sendFormData, setSendFormData] = useState("");
 
   const { mode, setMode, balances } = useContext(TransactionsContext);
-  const { signer } = useContext(BlockchainContext);
 
-  const url = `https://www.commonsys.tech/qr?type=eoa&address=${signer.address}`;
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -24,6 +21,7 @@ const Transactions = () => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
+    console.log(data);
     setSendFormData(data);
     setSendFormVisible(true);
   };
@@ -88,9 +86,8 @@ const Transactions = () => {
             onPress={() => {
               setMode("sending");
             }}
-            a
           >
-            <QRCode value={url} size={200} />
+            <QRCode value="https://www.commonsys.tech/qr?type=eoa&address=0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a" size={200}  />
           </Pressable>
         )}
       </View>
