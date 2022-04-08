@@ -69,7 +69,7 @@ const TransactionsProvider = ({ children }) => {
             gasLimit: gasLimit,
           })
           .then((result) => {
-            console.log("send_money result: ", result);
+            // TODO(techiejd): do something with this result!
           })
           .catch((error) => alert(error));
         return;
