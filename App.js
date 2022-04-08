@@ -14,6 +14,7 @@ import Spacer from "./components/Spacer";
 import BlockchainProvider from "./providers/BlockchainProvider";
 import TransactionsProvider from "./providers/TransactionsProvider";
 import TimelineProvider from "./providers/TimelineProvider";
+import VoteStoreProvider from "./providers/VoteStoreProvider";
 
 const App = () => {
   return (
@@ -24,15 +25,17 @@ const App = () => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <BlockchainProvider>
-          <TransactionsProvider>
-            <Transactions />
-          </TransactionsProvider>
-          <Spacer />
-          <ShopsMap />
-          <Spacer />
-          <TimelineProvider>
-            <Timeline />
-          </TimelineProvider>
+          <VoteStoreProvider>
+            <TransactionsProvider>
+              <Transactions />
+            </TransactionsProvider>
+            <Spacer />
+            <ShopsMap />
+            <Spacer />
+            <TimelineProvider>
+              <Timeline />
+            </TimelineProvider>
+          </VoteStoreProvider>
         </BlockchainProvider>
       </ScrollView>
     </SafeAreaView>

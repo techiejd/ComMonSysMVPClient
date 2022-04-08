@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { BlockchainContext } from "./BlockchainProvider";
+import { VoteStoreContext } from "./VoteStoreProvider";
 
 const TransactionsContext = React.createContext();
 
@@ -16,6 +17,7 @@ const TransactionsContext = React.createContext();
 const TransactionsProvider = ({ children }) => {
   const { signer, communityCoinContract, convert, gasLimit } =
     useContext(BlockchainContext);
+  const { setVote } = useContext(VoteStoreContext);
 
   const [mode, setMode] = useState("unset");
 
@@ -59,7 +61,7 @@ const TransactionsProvider = ({ children }) => {
   const send = ({ type, to, amount, choice }) => {
     switch (type) {
       case "vote":
-        console.log("vote choice: ", choice);
+        setVote(choice);
         return;
       case "money":
         communityCoinContract

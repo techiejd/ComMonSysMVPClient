@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import moment from "moment";
 import { BlockchainContext } from "./BlockchainProvider";
+import { VoteStoreContext } from "./VoteStoreProvider";
 
 /*
 TimelineObject
@@ -20,6 +21,7 @@ const TimelineProvider = ({ children }) => {
   const [timelineData, setTimelineData] = useState([]);
   const { signer, communityCoinContract, convert } =
     useContext(BlockchainContext);
+  const { voteMessage } = useContext(VoteStoreContext);
 
   const transactionArgsIndices = {
     from: 0,
@@ -91,10 +93,6 @@ const TimelineProvider = ({ children }) => {
             (to, from, amount, fullEvent) => {
               transform(fullEvent, fromDirectionalArgs).then(
                 (txTimelineDatum) => {
-                  console.log("dataStuff: ", {
-                    timelineData: timelineData,
-                    txTimelineDatum: txTimelineDatum,
-                  });
                   const updatedTimelineData = timelineData.slice();
                   updatedTimelineData.push(txTimelineDatum);
                   setTimelineData(updatedTimelineData);
@@ -106,6 +104,14 @@ const TimelineProvider = ({ children }) => {
     };
     load();
   }, []);
+
+  useEffect(() => {
+    if (voteMessage != null) {
+      const updatedTimelineData = timelineData.slice();
+      updatedTimelineData.unshift(voteMessage);
+      setTimelineData(updatedTimelineData);
+    }
+  }, [voteMessage]);
 
   return (
     <TimelineContext.Provider value={{ timelineData }}>
