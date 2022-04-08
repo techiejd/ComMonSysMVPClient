@@ -14,15 +14,8 @@ const TransactionsContext = React.createContext();
 // }
 
 const TransactionsProvider = ({ children }) => {
-  const { signer, communityCoinContract, utils, gasLimit } =
+  const { signer, communityCoinContract, convert, gasLimit } =
     useContext(BlockchainContext);
-  const prettify = (balance) => {
-    return utils.commify(Math.floor(utils.formatEther(balance)));
-  };
-
-  const unprettify = (amount) => {
-    return utils.parseEther(amount);
-  };
 
   const [mode, setMode] = useState("unset");
 
@@ -43,8 +36,16 @@ const TransactionsProvider = ({ children }) => {
               setBalances({
                 ...balances,
                 posted: {
-                  coms: prettify(comsPostedBalance),
-                  pc: prettify(pcPostedBalance),
+                  coms: convert({
+                    to: "peso",
+                    from: "wei",
+                    amount: comsPostedBalance,
+                  }),
+                  pc: convert({
+                    to: "peso",
+                    from: "wei",
+                    amount: pcPostedBalance,
+                  }),
                 },
               });
               setMode("sending");
@@ -62,7 +63,9 @@ const TransactionsProvider = ({ children }) => {
         return;
       case "money":
         communityCoinContract
-          .transfer(to, unprettify(amount), { gasLimit: gasLimit })
+          .transfer(to, convert({ to: "wei", from: "peso", amount: amount }), {
+            gasLimit: gasLimit,
+          })
           .then((result) => {
             console.log(result);
           })

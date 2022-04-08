@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import moment from "moment";
+import { BlockchainContext } from "./BlockchainProvider";
 
 /*
 TimelineObject
@@ -15,39 +16,70 @@ const TimelineContext = React.createContext();
 
 const TimelineProvider = ({ children }) => {
   const now = new moment();
-  const hardCodedTimeline = [
-    {
-      type: "transaction",
-      transactionType: "Send",
-      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
-      address: "0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a",
-      amount: 10,
-      ticker: "PBC",
-    },
-    {
-      type: "transaction",
-      transactionType: "Receive",
-      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
-      address: "0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a",
-      amount: 40,
-      ticker: "PBC",
-    },
-    {
-      type: "community_message",
-      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
-      message: "Votes have finished for initial campaign!",
-      community: "Poblado",
-    },
-    {
-      type: "community_message",
-      timestamp: now.format("MMM D") + " at " + now.format("HH:mm"),
-      message:
-        "This is a very long message Human Beings are born and remain free and equal in rights. Social distinctions can be founded only on the common good.",
-      community: "Poblado",
-    },
-  ];
 
-  const [timelineData, setTimelineData] = useState(hardCodedTimeline);
+  const [timelineData, setTimelineData] = useState([]);
+  const { signer, communityCoinContract, convert } =
+    useContext(BlockchainContext);
+
+  const getTransactionsTimelineData = async () => {
+    const getTransactionsByDirection = async (direction) => {
+      const transactionArgsIndices = {
+        from: 0,
+        to: 1,
+        amount: 2,
+      };
+      fromUserFilter = communityCoinContract.filters.Transfer(signer.address);
+      toUserFilter = communityCoinContract.filters.Transfer(
+        null,
+        signer.address
+      );
+      directionalArgs =
+        direction == "to"
+          ? {
+              addressIndex: transactionArgsIndices.from,
+              filter: toUserFilter,
+              type: "Receive",
+            }
+          : {
+              addressIndex: transactionArgsIndices.to,
+              filter: fromUserFilter,
+              type: "Send",
+            };
+      transactionEvents = await communityCoinContract.queryFilter(
+        directionalArgs.filter
+      );
+      return transactionEvents.map(async (txE) => {
+        // Must capture the data we want before await.
+        const transactionType = directionalArgs.type;
+        const address = txE.args[directionalArgs.addressIndex];
+        const b = await txE.getBlock();
+        const t = moment.unix(b.timestamp);
+        const transactionTimelineDatum = {
+          type: "transaction",
+          transactionType: transactionType,
+          timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
+          address: address,
+          amount: convert({
+            to: "peso",
+            from: "wei",
+            amount: txE.args[transactionArgsIndices.amount],
+          }),
+          ticker: "PBC",
+        };
+        return transactionTimelineDatum;
+      });
+    };
+    const toTransactions = await getTransactionsByDirection("to");
+    const fromTransactions = await getTransactionsByDirection("from");
+    return Promise.all(toTransactions.concat(fromTransactions));
+  };
+
+  useEffect(() => {
+    const load = () => {
+      getTransactionsTimelineData().then((txTData) => setTimelineData(txTData));
+    };
+    load();
+  }, []);
 
   return (
     <TimelineContext.Provider value={{ timelineData }}>

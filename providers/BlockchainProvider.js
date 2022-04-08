@@ -8,8 +8,6 @@ import { CommunityCoinAddress, GasLimit } from "../constants/Contracts";
 const BlockchainContext = React.createContext({
   signer: null,
 });
-
-const utils = ethers.utils;
 const gasLimit = GasLimit;
 
 const BlockchainProvider = ({ children }) => {
@@ -27,9 +25,21 @@ const BlockchainProvider = ({ children }) => {
     signer
   );
 
+  const convert = ({ to, from, amount }) => {
+    // This function exists for code cleanliness
+    switch (to) {
+      case "wei":
+        return ethers.utils.parseEther(amount);
+      case "peso":
+        return ethers.utils.commify(
+          Math.floor(ethers.utils.formatEther(amount))
+        );
+    }
+  };
+
   return (
     <BlockchainContext.Provider
-      value={{ signer, communityCoinContract, utils, gasLimit }}
+      value={{ signer, communityCoinContract, convert, gasLimit }}
     >
       {children}
     </BlockchainContext.Provider>
