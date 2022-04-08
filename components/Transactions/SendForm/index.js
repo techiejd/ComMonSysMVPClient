@@ -1,66 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import SendMoneyForm from "./SendMoneyForm";
 import SendVoteForm from "./SendVoteForm";
 import ErrorForm from "./ErrorForm";
-import URL from "url-parse";
-import { ethers } from "ethers";
+import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-const commonsysOrigin = "https://www.commonsys.tech";
-const commonsysQRPathName = "/qr";
-const commonsysTypes = ["eoa", "campaign"];
-
-function transform(data) {
-  var url = new URL(data, true);
-
-  const isInvalid = !(
-    url.origin == commonsysOrigin &&
-    url.pathname == commonsysQRPathName &&
-    commonsysTypes.includes(url.query.type) &&
-    ethers.utils.isAddress(url.query.address)
-  );
-
-  const commonsysData = {};
-  commonsysData.type = isInvalid
-    ? "invalid"
-    : url.query.type == "campaign"
-    ? "send_vote"
-    : "send_money";
-  switch (commonsysData.type) {
-    case "send_vote":
-      commonsysData.campaignInfo = {
-        address: url.query.address,
-        option: url.query.option,
-      };
-      break;
-    case "send_money":
-      commonsysData.sendTo = url.query.address;
-  }
-  return commonsysData;
-}
-
-export default function SendForm({ visible, setVisible, data }) {
-  const commonsysData = transform(data);
-  const showSendOn = (commonsysData) => {
-    switch (commonsysData.type) {
+export default function SendForm({ data }) {
+  const { mode, setMode } = useContext(TransactionsContext);
+  const showSendOn = (data) => {
+    switch (data.type) {
       case "invalid":
-        return <ErrorForm visible={visible} setVisible={setVisible} />;
+        return <ErrorForm />;
       case "send_vote":
-        return (
-          <SendVoteForm
-            visible={visible}
-            setVisible={setVisible}
-            campaignInfo={commonsysData.campaignInfo}
-          />
-        );
+        return <SendVoteForm campaignInfo={data.campaignInfo} />;
       case "send_money":
-        return (
-          <SendMoneyForm
-            visible={visible}
-            setVisible={setVisible}
-            sendTo={commonsysData.sendTo}
-          />
-        );
+        return <SendMoneyForm sendTo={data.sendTo} />;
     }
   };
 
@@ -68,14 +22,13 @@ export default function SendForm({ visible, setVisible, data }) {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={visible}
+      visible={mode == "inputtingSendForm"}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
-        setVisible(!visible);
+        setMode("inputtingQR");
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>{showSendOn(commonsysData)}</View>
+        <View style={styles.modalView}>{showSendOn(data)}</View>
       </View>
     </Modal>
   );

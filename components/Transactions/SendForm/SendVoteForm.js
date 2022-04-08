@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-export default function SendVoteForm({ visible, setVisible, campaignInfo }) {
-  const { send } = useContext(TransactionsContext);
+export default function SendVoteForm({ campaignInfo }) {
+  const { send, setMode } = useContext(TransactionsContext);
 
   return (
     <>
@@ -19,14 +19,14 @@ export default function SendVoteForm({ visible, setVisible, campaignInfo }) {
             to: campaignInfo.address,
             choice: campaignInfo.option,
           });
-          setVisible(!visible);
+          setMode("pending");
         }}
       >
         <Text>Yes</Text>
       </Pressable>
       <Pressable
         style={[styles.button, styles.buttonClose]}
-        onPress={() => setVisible(!visible)}
+        onPress={() => setMode("inputtingQR")}
       >
         <Text>Cancel?</Text>
       </Pressable>

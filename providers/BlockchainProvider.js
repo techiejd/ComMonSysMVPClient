@@ -39,7 +39,13 @@ const BlockchainProvider = ({ children }) => {
 
   return (
     <BlockchainContext.Provider
-      value={{ signer, communityCoinContract, convert, gasLimit }}
+      value={{
+        signer,
+        communityCoinContract,
+        convert,
+        gasLimit,
+        isAddress: ethers.utils.isAddress,
+      }}
     >
       {children}
     </BlockchainContext.Provider>

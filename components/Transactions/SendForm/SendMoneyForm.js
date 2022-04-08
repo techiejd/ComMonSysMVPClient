@@ -2,12 +2,12 @@ import React, { useState, useContext } from "react";
 import { Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-export default function SendMoneyForm({ visible, setVisible, sendTo }) {
+export default function SendMoneyForm({ sendTo }) {
   const [amount, setAmount] = useState("");
-  const { send } = useContext(TransactionsContext);
+  const { send, setMode } = useContext(TransactionsContext);
   const submit = () => {
     send({ type: "money", to: sendTo, amount: amount });
-    setVisible(!visible);
+    setMode("pending");
   };
   return (
     <>

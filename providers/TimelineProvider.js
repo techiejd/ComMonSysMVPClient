@@ -16,8 +16,6 @@ TimelineObject
 const TimelineContext = React.createContext();
 
 const TimelineProvider = ({ children }) => {
-  const now = new moment();
-
   const [timelineData, setTimelineData] = useState([]);
   const { signer, communityCoinContract, convert } =
     useContext(BlockchainContext);
@@ -56,7 +54,6 @@ const TimelineProvider = ({ children }) => {
       type: "transaction",
       transactionType: transactionType,
       timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
-      oderingTimestamp: b.timestamp,
       address: address,
       amount: convert({
         to: "peso",

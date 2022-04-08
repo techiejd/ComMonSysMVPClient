@@ -1,13 +1,14 @@
 import React from "react";
-import { Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { Text, StyleSheet, Pressable } from "react-native";
 
-export default function ErrorForm({ visible, setVisible }) {
+export default function ErrorForm() {
+  const { setMode } = useContext(TransactionsContext);
   return (
     <>
       <Text>Error! Seems like you did not scan a ComMonSys QR.</Text>
       <Pressable
         style={[styles.button, styles.buttonClose]}
-        onPress={() => setVisible(!visible)}
+        onPress={() => setMode("inputtingQR")}
       >
         <Text>OK</Text>
       </Pressable>

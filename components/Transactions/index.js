@@ -4,18 +4,20 @@ import { Picker } from "@react-native-picker/picker";
 import { Camera } from "expo-camera";
 import SendForm from "./SendForm";
 import { TransactionsContext } from "../../providers/TransactionsProvider";
-import { BlockchainContext } from "../../providers/BlockchainProvider";
 import QRCode from "react-native-qrcode-svg";
 
 const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null);
-  const [sendFormVisible, setSendFormVisible] = useState(false);
   const [sendFormData, setSendFormData] = useState("");
 
-  const { mode, setMode, balances } = useContext(TransactionsContext);
-  const { signer } = useContext(BlockchainContext);
+  const {
+    mode,
+    setMode,
+    balances,
+    transformQRDataToCommonsysData,
+    userQRValue,
+  } = useContext(TransactionsContext);
 
-  const url = `https://www.commonsys.tech/qr?type=eoa&address=${signer.address}`;
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -23,9 +25,9 @@ const Transactions = () => {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setSendFormData(data);
-    setSendFormVisible(true);
+  const handleBarCodeScanned = ({ type, data: qrData }) => {
+    setSendFormData(transformQRDataToCommonsysData(qrData));
+    setMode("inputtingSendForm");
   };
 
   if (hasPermission === null) {
@@ -36,7 +38,7 @@ const Transactions = () => {
   }
 
   const composeBalance = (balance) => {
-    if (mode == "receiving") {
+    if (mode == "displayingQR") {
       return "❓";
     }
     if (mode == "loading" || mode == "unset") {
@@ -53,11 +55,7 @@ const Transactions = () => {
         justifyContent: "center",
       }}
     >
-      <SendForm
-        visible={sendFormVisible}
-        setVisible={setSendFormVisible}
-        data={sendFormData}
-      />
+      <SendForm data={sendFormData} />
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
           label={`₱oblado | $` + composeBalance(balances.posted.pc)}
@@ -69,7 +67,7 @@ const Transactions = () => {
         />
       </Picker>
       <View style={styles.qrLike}>
-        {mode == "sending" ? (
+        {mode == "inputtingQR" ? (
           <Camera
             onBarCodeScanned={handleBarCodeScanned}
             style={styles.full}
@@ -78,7 +76,7 @@ const Transactions = () => {
             <Pressable
               style={styles.full}
               onPress={() => {
-                setMode("receiving");
+                setMode("displayingQR");
               }}
             />
           </Camera>
@@ -86,11 +84,10 @@ const Transactions = () => {
           <Pressable
             style={styles.full}
             onPress={() => {
-              setMode("sending");
+              setMode("inputtingQR");
             }}
-            a
           >
-            <QRCode value={url} size={200} />
+            <QRCode value={userQRValue} size={200} />
           </Pressable>
         )}
       </View>
