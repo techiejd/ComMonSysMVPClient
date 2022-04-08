@@ -21,53 +21,58 @@ const TimelineProvider = ({ children }) => {
   const { signer, communityCoinContract, convert } =
     useContext(BlockchainContext);
 
+  const transactionArgsIndices = {
+    from: 0,
+    to: 1,
+    amount: 2,
+  };
+
+  const getDirectionalArgsFor = (direction) => {
+    return direction == "to"
+      ? {
+          addressIndex: transactionArgsIndices.from,
+          filter: toUserFilter,
+          type: "Receive",
+        }
+      : {
+          addressIndex: transactionArgsIndices.to,
+          filter: fromUserFilter,
+          type: "Send",
+        };
+  };
+  const transform = async (txEvent, directionalArgs) => {
+    // Must capture the data we want before await.
+    const transactionType = directionalArgs.type;
+    const address = txEvent.args[directionalArgs.addressIndex];
+    const b = await txEvent.getBlock();
+    const t = moment.unix(b.timestamp);
+    const transactionTimelineDatum = {
+      type: "transaction",
+      transactionType: transactionType,
+      timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
+      address: address,
+      amount: convert({
+        to: "peso",
+        from: "wei",
+        amount: txEvent.args[transactionArgsIndices.amount],
+      }),
+      ticker: "PBC",
+    };
+    return transactionTimelineDatum;
+  };
+
   const getTransactionsTimelineData = async () => {
     const getTransactionsByDirection = async (direction) => {
-      const transactionArgsIndices = {
-        from: 0,
-        to: 1,
-        amount: 2,
-      };
       fromUserFilter = communityCoinContract.filters.Transfer(signer.address);
       toUserFilter = communityCoinContract.filters.Transfer(
         null,
         signer.address
       );
-      directionalArgs =
-        direction == "to"
-          ? {
-              addressIndex: transactionArgsIndices.from,
-              filter: toUserFilter,
-              type: "Receive",
-            }
-          : {
-              addressIndex: transactionArgsIndices.to,
-              filter: fromUserFilter,
-              type: "Send",
-            };
+      directionalArgs = getDirectionalArgsFor(direction);
       transactionEvents = await communityCoinContract.queryFilter(
         directionalArgs.filter
       );
-      return transactionEvents.map(async (txE) => {
-        // Must capture the data we want before await.
-        const transactionType = directionalArgs.type;
-        const address = txE.args[directionalArgs.addressIndex];
-        const b = await txE.getBlock();
-        const t = moment.unix(b.timestamp);
-        const transactionTimelineDatum = {
-          type: "transaction",
-          transactionType: transactionType,
-          timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
-          address: address,
-          amount: convert({
-            to: "peso",
-            from: "wei",
-            amount: txE.args[transactionArgsIndices.amount],
-          }),
-          ticker: "PBC",
-        };
-        return transactionTimelineDatum;
-      });
+      return transactionEvents.map((txE) => transform(txE, directionalArgs));
     };
     const toTransactions = await getTransactionsByDirection("to");
     const fromTransactions = await getTransactionsByDirection("from");
@@ -76,7 +81,28 @@ const TimelineProvider = ({ children }) => {
 
   useEffect(() => {
     const load = () => {
-      getTransactionsTimelineData().then((txTData) => setTimelineData(txTData));
+      getTransactionsTimelineData()
+        .then((txTData) => setTimelineData(txTData))
+        .then(() => {
+          toDirectionalArgs = getDirectionalArgsFor("to");
+          fromDirectionalArgs = getDirectionalArgsFor("from");
+          communityCoinContract.on(
+            fromDirectionalArgs.filter,
+            (to, from, amount, fullEvent) => {
+              transform(fullEvent, fromDirectionalArgs).then(
+                (txTimelineDatum) => {
+                  console.log("dataStuff: ", {
+                    timelineData: timelineData,
+                    txTimelineDatum: txTimelineDatum,
+                  });
+                  const updatedTimelineData = timelineData.slice();
+                  updatedTimelineData.push(txTimelineDatum);
+                  setTimelineData(updatedTimelineData);
+                }
+              );
+            }
+          );
+        });
     };
     load();
   }, []);

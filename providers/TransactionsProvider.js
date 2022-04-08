@@ -59,7 +59,7 @@ const TransactionsProvider = ({ children }) => {
   const send = ({ type, to, amount, choice }) => {
     switch (type) {
       case "vote":
-        console.log(choice);
+        console.log("vote choice: ", choice);
         return;
       case "money":
         communityCoinContract
@@ -67,7 +67,7 @@ const TransactionsProvider = ({ children }) => {
             gasLimit: gasLimit,
           })
           .then((result) => {
-            console.log(result);
+            console.log("send_money result: ", result);
           })
           .catch((error) => alert(error));
         return;
