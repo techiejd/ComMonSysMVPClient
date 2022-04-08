@@ -4,7 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Camera } from "expo-camera";
 import SendForm from "./SendForm";
 import { TransactionsContext } from "../../providers/TransactionsProvider";
-import QR from "../QrCode";
+import QRCode from 'react-native-qrcode-svg';
 
 const Transactions = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -87,7 +87,7 @@ const Transactions = () => {
               setMode("sending");
             }}
           >
-            <QR />
+            <QRCode value="https://www.commonsys.tech/qr?type=eoa&address=0xCca2bd5957073026b56Cdaaeb282AD4a61619a3a" size={200}  />
           </Pressable>
         )}
       </View>
