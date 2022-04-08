@@ -35,7 +35,7 @@ const VoteStoreProvider = ({ children }) => {
   }, [vote]);
 
   return (
-    <VoteStoreContext.Provider value={{ setVote, voteMessage }}>
+    <VoteStoreContext.Provider value={{ vote, setVote, voteMessage }}>
       {children}
     </VoteStoreContext.Provider>
   );

@@ -10,7 +10,7 @@ const TransactionsContext = React.createContext();
 //     posted: { coms: '1,000', pc: '1,000' }, // null if it hasn't loaded
 //     pending: { coms: '-1,000', pc: '-1,000' }, // null if there's never a pending balance
 //   },
-//   mode: 'unset' || 'loading' || 'inputtingQR' || 'pending' || 'displayingQR' || 'inputtingSendForm',
+//   mode: 'loading' || 'inputtingQR' || 'pending' || 'displayingQR' || 'inputtingSendForm',
 //   setMode: (newMode),
 //   send: ()
 // }
@@ -22,23 +22,60 @@ const TransactionsProvider = ({ children }) => {
     convert: convertMoney,
     gasLimit,
     isAddress,
+    onboard,
   } = useContext(BlockchainContext);
-  const { setVote } = useContext(VoteStoreContext);
+  const { vote, setVote } = useContext(VoteStoreContext);
 
-  const [mode, setMode] = useState("unset");
+  const [mode, setMode] = useState("loading");
   useEffect(() => {
     if (mode == "pending") setMode((mode) => "inputtingQR");
   }, [mode]);
+
+  const [userQRValue, setUserQRValue] = useState("");
 
   const [balances, setBalances] = useState({
     posted: { coms: null, pc: null },
     pending: { coms: null, pc: null },
   });
 
+  const updateBalances = () => {
+    return signer
+      .getBalance()
+      .then((comsPostedBalance) => {
+        return communityCoinContract.callStatic
+          .balanceOf(signer.address)
+          .then((pcPostedBalance) => {
+            setBalances({
+              ...balances,
+              posted: {
+                coms: convertMoney({
+                  to: "peso",
+                  from: "wei",
+                  amount: comsPostedBalance,
+                }),
+                pc: convertMoney({
+                  to: "peso",
+                  from: "wei",
+                  amount: pcPostedBalance,
+                }),
+              },
+            });
+          });
+      })
+      .catch((error) => alert(error));
+  };
+
   const send = ({ type, to, amount, choice }) => {
     switch (type) {
       case "vote":
-        setVote(choice);
+        if (vote == null) {
+          setVote(choice);
+          onboard().then((txResult) => {
+            txResult.wait().then((result) => {
+              updateBalances();
+            });
+          });
+        }
         return;
       case "money":
         communityCoinContract
@@ -49,8 +86,10 @@ const TransactionsProvider = ({ children }) => {
               gasLimit: gasLimit,
             }
           )
-          .then((result) => {
-            // TODO(techiejd): do something with this result!
+          .then((txResult) => {
+            txResult.wait().then((result) => {
+              updateBalances();
+            });
           })
           .catch((error) => alert(error));
         return;
@@ -93,39 +132,15 @@ const TransactionsProvider = ({ children }) => {
     return transform(qrData);
   };
 
-  const userQRValue = `https://www.commonsys.tech/qr?type=eoa&address=${signer.address}`;
-
   useEffect(() => {
     const load = () => {
-      setMode("loading");
-      signer
-        .getBalance()
-        .then((comsPostedBalance) => {
-          communityCoinContract.callStatic
-            .balanceOf(signer.address)
-            .then((pcPostedBalance) => {
-              setBalances({
-                ...balances,
-                posted: {
-                  coms: convertMoney({
-                    to: "peso",
-                    from: "wei",
-                    amount: comsPostedBalance,
-                  }),
-                  pc: convertMoney({
-                    to: "peso",
-                    from: "wei",
-                    amount: pcPostedBalance,
-                  }),
-                },
-              });
-              setMode("inputtingQR");
-            });
-        })
-        .catch((error) => alert(error));
+      setUserQRValue(
+        `https://www.commonsys.tech/qr?type=eoa&address=${signer.address}`
+      );
+      updateBalances().then(() => setMode("inputtingQR"));
     };
-    load();
-  }, []);
+    if (signer != null) load();
+  }, [signer]);
 
   return (
     <TransactionsContext.Provider

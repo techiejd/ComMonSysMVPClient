@@ -85,28 +85,31 @@ const TimelineProvider = ({ children }) => {
 
   useEffect(() => {
     const load = () => {
-      getTransactionsTimelineData()
-        .then((txTData) => {
-          txTData.reverse(); // node hands them in ascending order
-          setTimelineData(txTData);
-        })
-        .then(() => {
-          toDirectionalArgs = getDirectionalArgsFor("to");
-          fromDirectionalArgs = getDirectionalArgsFor("from");
-          communityCoinContract.on(
-            fromDirectionalArgs.filter,
-            (to, from, amount, fullEvent) => {
-              transform(fullEvent, fromDirectionalArgs).then(
-                (txTimelineDatum) => {
-                  updateTimelineData(txTimelineDatum);
-                }
-              );
-            }
-          );
-        });
+      getTransactionsTimelineData().then((txTData) => {
+        txTData.reverse(); // node hands them in ascending order
+        setTimelineData((timelineData) => [...timelineData, ...txTData]);
+      });
+      toDirectionalArgs = getDirectionalArgsFor("to");
+      fromDirectionalArgs = getDirectionalArgsFor("from");
+      communityCoinContract.on(
+        fromDirectionalArgs.filter,
+        (to, from, amount, fullEvent) => {
+          transform(fullEvent, fromDirectionalArgs).then((txTimelineDatum) => {
+            updateTimelineData(txTimelineDatum);
+          });
+        }
+      );
+      communityCoinContract.on(
+        toDirectionalArgs.filter,
+        (to, from, amount, fullEvent) => {
+          transform(fullEvent, toDirectionalArgs).then((txTimelineDatum) => {
+            updateTimelineData(txTimelineDatum);
+          });
+        }
+      );
     };
-    load();
-  }, []);
+    if (signer != null) load();
+  }, [signer]);
 
   useEffect(() => {
     if (voteMessage != null) {
