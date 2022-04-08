@@ -4,7 +4,7 @@ import moment from "moment";
 const VoteStoreContext = React.createContext();
 
 const VoteStoreProvider = ({ children }) => {
-  const [voteMessage, setVoteMessage] = useState({});
+  const [voteMessage, setVoteMessage] = useState();
   const [vote, setVote] = useState(null); // 0 || 1 || 2 hardcoding three options only ;).
 
   const messages = [

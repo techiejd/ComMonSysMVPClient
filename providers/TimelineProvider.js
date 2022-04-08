@@ -23,6 +23,10 @@ const TimelineProvider = ({ children }) => {
     useContext(BlockchainContext);
   const { voteMessage } = useContext(VoteStoreContext);
 
+  const updateTimelineData = (timelineDatum) => {
+    setTimelineData((timelineData) => [timelineDatum, ...timelineData]);
+  };
+
   const transactionArgsIndices = {
     from: 0,
     to: 1,
@@ -52,6 +56,7 @@ const TimelineProvider = ({ children }) => {
       type: "transaction",
       transactionType: transactionType,
       timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
+      oderingTimestamp: b.timestamp,
       address: address,
       amount: convert({
         to: "peso",
@@ -84,7 +89,10 @@ const TimelineProvider = ({ children }) => {
   useEffect(() => {
     const load = () => {
       getTransactionsTimelineData()
-        .then((txTData) => setTimelineData(txTData))
+        .then((txTData) => {
+          txTData.reverse(); // node hands them in ascending order
+          setTimelineData(txTData);
+        })
         .then(() => {
           toDirectionalArgs = getDirectionalArgsFor("to");
           fromDirectionalArgs = getDirectionalArgsFor("from");
@@ -93,9 +101,7 @@ const TimelineProvider = ({ children }) => {
             (to, from, amount, fullEvent) => {
               transform(fullEvent, fromDirectionalArgs).then(
                 (txTimelineDatum) => {
-                  const updatedTimelineData = timelineData.slice();
-                  updatedTimelineData.push(txTimelineDatum);
-                  setTimelineData(updatedTimelineData);
+                  updateTimelineData(txTimelineDatum);
                 }
               );
             }
@@ -107,9 +113,7 @@ const TimelineProvider = ({ children }) => {
 
   useEffect(() => {
     if (voteMessage != null) {
-      const updatedTimelineData = timelineData.slice();
-      updatedTimelineData.unshift(voteMessage);
-      setTimelineData(updatedTimelineData);
+      updateTimelineData(voteMessage);
     }
   }, [voteMessage]);
 
