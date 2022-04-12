@@ -56,8 +56,7 @@ const TimelineProvider = ({ children }) => {
       timestamp: t.format("MMM D") + " at " + t.format("HH:mm"),
       address: address,
       amount: convert({
-        to: "peso",
-        from: "wei",
+        to: "pretty_peso",
         amount: txEvent.args[transactionArgsIndices.amount],
       }),
       ticker: "PBC",

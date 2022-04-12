@@ -51,13 +51,11 @@ const TransactionsProvider = ({ children }) => {
               ...balances,
               posted: {
                 coms: convertMoney({
-                  to: "peso",
-                  from: "wei",
+                  to: "pretty_peso",
                   amount: comsPostedBalance,
                 }),
                 pc: convertMoney({
-                  to: "peso",
-                  from: "wei",
+                  to: "pretty_peso",
                   amount: pcPostedBalance,
                 }),
               },
@@ -81,13 +79,9 @@ const TransactionsProvider = ({ children }) => {
         return;
       case "money":
         communityCoinContract
-          .transfer(
-            to,
-            convertMoney({ to: "wei", from: "peso", amount: amount }),
-            {
-              gasLimit: gasLimit,
-            }
-          )
+          .transfer(to, convertMoney({ to: "wei", amount: amount }), {
+            gasLimit: gasLimit,
+          })
           .then((txResult) => {
             txResult.wait().then((result) => {
               updateBalances();

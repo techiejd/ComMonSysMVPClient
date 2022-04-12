@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 // TODO(techiejd): Hack. Figure out what to do about these random values. Calling .random with this takes too long.
 // import "react-native-get-random-values";
 import "@ethersproject/shims";
@@ -12,11 +12,29 @@ import {
   GasLimit,
 } from "../constants/Contracts";
 
-const BlockchainContext = React.createContext();
+interface IBlockchainContext {
+  signer: ethers.Wallet | undefined;
+  communityCoinContract: ethers.Contract;
+  convert: ({
+    to,
+    amount,
+  }:
+    | { to: "wei"; amount: string }
+    | { to: "pretty_peso"; amount: ethers.BigNumberish }) =>
+    | string
+    | ethers.BigNumber;
+  gasLimit: number;
+  isAddress: (address: string) => boolean;
+  onboard: () => void;
+}
+
+const BlockchainContext = React.createContext<IBlockchainContext | undefined>(
+  undefined
+);
 const gasLimit = GasLimit;
 
-const BlockchainProvider = ({ children }) => {
-  const [signer, setSigner] = useState(null);
+const BlockchainProvider: FC = ({ children }) => {
+  const [wallet, setWallet] = useState<ethers.Wallet | undefined>(undefined);
   const provider = new ethers.providers.JsonRpcProvider({
     url: "https://137.184.238.79/rpc", // ComMonSys MVP rpc
     timeout: 15000,
@@ -24,47 +42,51 @@ const BlockchainProvider = ({ children }) => {
 
   useEffect(() => {
     // TODO(techiejd): Create and save the users' address.
-    setSigner(ethers.Wallet.createRandom().connect(provider));
+    setWallet(ethers.Wallet.createRandom().connect(provider));
   }, []);
 
   const communityCoinContract = new ethers.Contract(
     CommunityCoinAddress,
     ERC20ABI,
-    signer
+    wallet
   );
 
-  const convert = ({ to, from, amount }) => {
+  const convert = ({
+    to,
+    amount,
+  }:
+    | { to: "wei"; amount: string }
+    | { to: "pretty_peso"; amount: ethers.BigNumberish }) => {
     // This function exists for code cleanliness
     switch (to) {
       case "wei":
         return ethers.utils.parseEther(amount);
-      case "peso":
+      case "pretty_peso":
         return ethers.utils.commify(
-          Math.floor(ethers.utils.formatEther(amount))
+          Math.floor(parseInt(ethers.utils.formatEther(amount)))
         );
     }
   };
 
   const onboard = () => {
     // Literally just need it cause Ethereum network doesn't accept transactions if the person can't pay for fees.
-    signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
+    const signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
     const faucetContract = new ethers.Contract(
       FaucetAdress,
       FaucetABI,
       signerWithMoney
     );
-    communityCoinAmount = convert({
+    const communityCoinAmount = convert({
       to: "wei",
-      frrom: "peso",
       amount: "25000",
     });
-    ethAmount = convert({ to: "wei", from: "peso", amount: "120000" });
+    const ethAmount = convert({ to: "wei", amount: "120000" });
     return faucetContract
-      .requestEthFor(signer.address, ethAmount)
-      .then((txResult) => {
+      .requestEthFor(wallet?.address, ethAmount)
+      .then((txResult: { wait: () => Promise<any> }) => {
         return txResult.wait().then(() => {
           return faucetContract.requestTokensFor(
-            signer.address,
+            wallet?.address,
             communityCoinAmount
           );
         });
@@ -74,7 +96,7 @@ const BlockchainProvider = ({ children }) => {
   return (
     <BlockchainContext.Provider
       value={{
-        signer,
+        signer: wallet,
         communityCoinContract,
         convert,
         gasLimit,
