@@ -1,52 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Image, Text, View, StyleSheet, Pressable } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { Camera } from "expo-camera";
+import React from "react";
+import { View } from "react-native";
 import SendForm from "./SendForm";
-import { TransactionsContext } from "../../providers/TransactionsProvider";
-import QRCode from "react-native-qrcode-svg";
+import CoinPicker from "./CoinPicker";
+import QRInterface from "./QRInterface";
 
 const Transactions = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [sendFormData, setSendFormData] = useState("");
-
-  const {
-    mode,
-    setMode,
-    balances,
-    transformQRDataToCommonsysData,
-    userQRValue,
-  } = useContext(TransactionsContext);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  const handleBarCodeScanned = ({ type, data: qrData }) => {
-    setSendFormData(transformQRDataToCommonsysData(qrData));
-    setMode("inputtingSendForm");
-  };
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  const composeBalance = (balance) => {
-    if (mode == "displayingQR") {
-      return "❓";
-    }
-    if (mode == "loading" || mode == "unset") {
-      return "✋⏳";
-    }
-    return balance;
-  };
-
   return (
     <View
       style={{
@@ -55,93 +13,11 @@ const Transactions = () => {
         justifyContent: "center",
       }}
     >
-      <SendForm data={sendFormData} />
-      <Picker style={styles.picker} itemStyle={styles.pickerItem}>
-        <Picker.Item
-          label={`₱oblado | $` + composeBalance(balances.posted.pc)}
-          value="poblado"
-        />
-        <Picker.Item
-          label={`ComMonSys | $` + composeBalance(balances.posted.coms)}
-          value="commonsys"
-        />
-      </Picker>
-      <View style={styles.qrLike}>
-        {mode == "inputtingQR" ? (
-          <Camera
-            onBarCodeScanned={handleBarCodeScanned}
-            style={styles.full}
-            autoFocus={"on"}
-          >
-            <Pressable
-              style={styles.full}
-              onPress={() => {
-                setMode("displayingQR");
-              }}
-            />
-          </Camera>
-        ) : (
-          <Pressable
-            style={styles.full}
-            onPress={() => {
-              setMode("inputtingQR");
-            }}
-          >
-            <QRCode value={userQRValue} size={200} />
-          </Pressable>
-        )}
-      </View>
+      <SendForm />
+      <CoinPicker />
+      <QRInterface />
     </View>
   );
 };
 
 export default Transactions;
-
-const styles = StyleSheet.create({
-  picker: {
-    width: 250,
-  },
-  pickerItem: {
-    color: "black",
-  },
-  qrLike: {
-    width: 200,
-    height: 200,
-  },
-  full: {
-    width: "100%",
-    height: "100%",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    height: 200,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-});

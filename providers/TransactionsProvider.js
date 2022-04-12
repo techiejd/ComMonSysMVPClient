@@ -26,6 +26,8 @@ const TransactionsProvider = ({ children }) => {
   } = useContext(BlockchainContext);
   const { vote, setVote } = useContext(VoteStoreContext);
 
+  const [sendFormData, setSendFormData] = useState("");
+
   const [mode, setMode] = useState("loading");
   useEffect(() => {
     if (mode == "pending") setMode((mode) => "inputtingQR");
@@ -151,6 +153,8 @@ const TransactionsProvider = ({ children }) => {
         send,
         transformQRDataToCommonsysData,
         userQRValue,
+        sendFormData,
+        setSendFormData,
       }}
     >
       {children}

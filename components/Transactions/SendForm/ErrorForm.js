@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
+import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
 export default function ErrorForm() {
   const { setMode } = useContext(TransactionsContext);

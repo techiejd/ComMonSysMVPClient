@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import SendMoneyForm from "./SendMoneyForm";
 import SendVoteForm from "./SendVoteForm";
 import ErrorForm from "./ErrorForm";
 import { TransactionsContext } from "../../../providers/TransactionsProvider";
 
-export default function SendForm({ data }) {
-  const { mode, setMode } = useContext(TransactionsContext);
+export default function SendForm() {
+  const { mode, setMode, sendFormData } = useContext(TransactionsContext);
   const showSendOn = (data) => {
     switch (data.type) {
       case "invalid":
@@ -28,7 +28,7 @@ export default function SendForm({ data }) {
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>{showSendOn(data)}</View>
+        <View style={styles.modalView}>{showSendOn(sendFormData)}</View>
       </View>
     </Modal>
   );
