@@ -17,7 +17,7 @@ const TransactionsContext = React.createContext();
 
 const TransactionsProvider = ({ children }) => {
   const {
-    signer,
+    wallet,
     communityCoinContract,
     convert: convertMoney,
     gasLimit,
@@ -41,11 +41,11 @@ const TransactionsProvider = ({ children }) => {
   });
 
   const updateBalances = () => {
-    return signer
+    return wallet
       .getBalance()
       .then((comsPostedBalance) => {
         return communityCoinContract.callStatic
-          .balanceOf(signer.address)
+          .balanceOf(wallet.address)
           .then((pcPostedBalance) => {
             setBalances({
               ...balances,
@@ -131,12 +131,12 @@ const TransactionsProvider = ({ children }) => {
   useEffect(() => {
     const load = () => {
       setUserQRValue(
-        `https://www.commonsys.tech/qr?type=eoa&address=${signer.address}`
+        `https://www.commonsys.tech/qr?type=eoa&address=${wallet.address}`
       );
       updateBalances().then(() => setMode("inputtingQR"));
     };
-    if (signer != null) load();
-  }, [signer]);
+    if (wallet != null) load();
+  }, [wallet]);
 
   return (
     <TransactionsContext.Provider

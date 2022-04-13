@@ -13,7 +13,7 @@ import {
 } from "../constants/Contracts";
 
 interface IBlockchainContext {
-  signer: ethers.Wallet | undefined;
+  wallet: ethers.Wallet | undefined;
   communityCoinContract: ethers.Contract;
   convert: ({
     to,
@@ -96,7 +96,7 @@ const BlockchainProvider: FC = ({ children }) => {
   return (
     <BlockchainContext.Provider
       value={{
-        signer: wallet,
+        wallet,
         communityCoinContract,
         convert,
         gasLimit,
@@ -110,4 +110,4 @@ const BlockchainProvider: FC = ({ children }) => {
 };
 
 export default BlockchainProvider;
-export { BlockchainContext };
+export { BlockchainContext, IBlockchainContext };
