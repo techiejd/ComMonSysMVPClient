@@ -8,13 +8,15 @@ import { TransactionsContext } from "../../../providers/TransactionsProvider";
 export default function SendForm() {
   const { mode, setMode, sendFormData } = useContext(TransactionsContext);
   const showSendOn = (data) => {
-    switch (data.type) {
-      case "invalid":
-        return <ErrorForm />;
-      case "send_vote":
-        return <SendVoteForm campaignInfo={data.campaignInfo} />;
-      case "send_money":
-        return <SendMoneyForm sendTo={data.sendTo} />;
+    if (mode == "inputtingSendForm") {
+      switch (data.type) {
+        case "invalid":
+          return <ErrorForm />;
+        case "send_vote":
+          return <SendVoteForm campaignInfo={data.campaignInfo} />;
+        case "send_money":
+          return <SendMoneyForm sendTo={data.sendTo} />;
+      }
     }
   };
 

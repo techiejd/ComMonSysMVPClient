@@ -7,13 +7,8 @@ import QRCode from "react-native-qrcode-svg";
 const QRInterface = () => {
   const [hasPermission, setHasPermission] = useState(null);
 
-  const {
-    mode,
-    setMode,
-    transformQRDataToCommonsysData,
-    userQRValue,
-    setSendFormData,
-  } = useContext(TransactionsContext);
+  const { mode, setMode, userQRValue, process } =
+    useContext(TransactionsContext);
 
   useEffect(() => {
     (async () => {
@@ -23,8 +18,7 @@ const QRInterface = () => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data: qrData }) => {
-    setSendFormData(transformQRDataToCommonsysData(qrData));
-    setMode("inputtingSendForm");
+    process(qrData);
   };
 
   if (hasPermission === null) {

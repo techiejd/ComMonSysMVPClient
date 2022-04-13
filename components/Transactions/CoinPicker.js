@@ -19,11 +19,11 @@ const CoinPicker = () => {
   return (
     <Picker style={styles.picker} itemStyle={styles.pickerItem}>
       <Picker.Item
-        label={`₱oblado | $` + composeBalance(balances.posted.pc)}
+        label={`₱oblado | $` + composeBalance(balances.posted?.pc)}
         value="poblado"
       />
       <Picker.Item
-        label={`ComMonSys | $` + composeBalance(balances.posted.coms)}
+        label={`ComMonSys | $` + composeBalance(balances.posted?.coms)}
         value="commonsys"
       />
     </Picker>

@@ -25,7 +25,7 @@ interface IBlockchainContext {
     | ethers.BigNumber;
   gasLimit: number;
   isAddress: (address: string) => boolean;
-  onboard: () => void;
+  onboard: () => Promise<{ wait: () => Promise<any> }>;
 }
 
 const BlockchainContext = React.createContext<IBlockchainContext | undefined>(
@@ -68,7 +68,7 @@ const BlockchainProvider: FC = ({ children }) => {
     }
   };
 
-  const onboard = () => {
+  const onboard = (): Promise<{ wait: () => Promise<any> }> => {
     // Literally just need it cause Ethereum network doesn't accept transactions if the person can't pay for fees.
     const signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
     const faucetContract = new ethers.Contract(
