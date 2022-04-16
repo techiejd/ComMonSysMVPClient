@@ -1,7 +1,10 @@
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
+import { CommunityMessageTimelineDatum } from "../../providers/TimelineProvider";
 
-const CommunityMessageRow = ({ timestamp, community, message }) => {
+const CommunityMessageRow: React.FC<{
+  communityMessage: CommunityMessageTimelineDatum;
+}> = ({ communityMessage: { timestamp, community, message } }) => {
   return (
     <View style={styles.container}>
       <Image

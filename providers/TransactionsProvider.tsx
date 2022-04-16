@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, FC } from "react";
 import { BlockchainContext, IBlockchainContext } from "./BlockchainProvider";
-import { VoteStoreContext } from "./VoteStoreProvider";
+import { VoteStoreContext, IVoteStoreContext } from "./VoteStoreProvider";
 import URL from "url-parse";
 
 type MoneyTransaction = {
@@ -65,7 +65,7 @@ const TransactionsProvider: FC = ({ children }) => {
     isAddress,
     onboard,
   } = useContext(BlockchainContext) as IBlockchainContext;
-  const { vote, setVote } = useContext(VoteStoreContext);
+  const { vote, setVote } = useContext(VoteStoreContext) as IVoteStoreContext;
 
   const [sendFormData, setSendFormData] = useState<SendFormData | undefined>(
     undefined
@@ -110,7 +110,7 @@ const TransactionsProvider: FC = ({ children }) => {
     switch (tx.type) {
       case "vote":
         if (vote == null) {
-          setVote(tx.choice);
+          setVote(parseInt(tx.choice));
           onboard().then((txResult) => {
             txResult.wait().then((result) => {
               updateBalances();

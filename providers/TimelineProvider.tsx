@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, FC } from "react";
 import moment from "moment";
 import { BlockchainContext, IBlockchainContext } from "./BlockchainProvider";
-import { VoteStoreContext } from "./VoteStoreProvider";
+import { VoteStoreContext, IVoteStoreContext } from "./VoteStoreProvider";
 import { EventFilter, Event, BigNumberish } from "ethers";
 
 type TransactionTimelineDatum = {
@@ -13,12 +13,14 @@ type TransactionTimelineDatum = {
   ticker: "PBC";
 };
 
-type communityMessageTimelineDatum = {
+type CommunityMessageTimelineDatum = {
   type: "community_message";
   timestamp: string;
+  message: string;
+  community: string;
 };
 
-type TimelineDatum = TransactionTimelineDatum | communityMessageTimelineDatum;
+type TimelineDatum = TransactionTimelineDatum | CommunityMessageTimelineDatum;
 
 interface ITimelineContext {
   timelineData: TimelineDatum[];
@@ -28,12 +30,37 @@ const TimelineContext = React.createContext<ITimelineContext | undefined>(
   undefined
 );
 
+// TODO(techiejd): Remove this hard coded values.
+//t.format("MMM D") + " at " + t.format("HH:mm")
+const now = moment.unix(moment.now());
+const fakeTimestamp = now.format("MMM D") + " at " + now.format("HH:mm");
+const messages: Array<CommunityMessageTimelineDatum> = [
+  {
+    timestamp: fakeTimestamp,
+    community: "Poblado",
+    message: "Muchas gracias por tu voto, juntos creamos comunidad",
+    type: "community_message",
+  },
+  {
+    timestamp: fakeTimestamp,
+    community: "Poblado",
+    message: "Muchas gracias por tu voto, juntos creamos comunidad",
+    type: "community_message",
+  },
+  {
+    timestamp: fakeTimestamp,
+    community: "Poblado",
+    message: "Muchas gracias por tu voto, juntos creamos comunidad",
+    type: "community_message",
+  },
+];
+
 const TimelineProvider: FC = ({ children }) => {
   const [timelineData, setTimelineData] = useState(new Array<TimelineDatum>());
   const { wallet, communityCoinContract, convert } = useContext(
     BlockchainContext
   ) as IBlockchainContext;
-  const { voteMessage } = useContext(VoteStoreContext);
+  const { vote } = useContext(VoteStoreContext) as IVoteStoreContext;
 
   const updateTimelineData = (timelineDatum: TimelineDatum) => {
     setTimelineData((prevTimelineData: TimelineDatum[]) => [
@@ -146,10 +173,10 @@ const TimelineProvider: FC = ({ children }) => {
   }, [wallet]);
 
   useEffect(() => {
-    if (voteMessage != null) {
-      updateTimelineData(voteMessage);
+    if (vote != null) {
+      updateTimelineData(messages[vote]);
     }
-  }, [voteMessage]);
+  }, [vote]);
 
   return (
     <TimelineContext.Provider value={{ timelineData }}>
@@ -159,4 +186,10 @@ const TimelineProvider: FC = ({ children }) => {
 };
 
 export default TimelineProvider;
-export { TimelineContext };
+export {
+  TimelineContext,
+  ITimelineContext,
+  TimelineDatum,
+  TransactionTimelineDatum,
+  CommunityMessageTimelineDatum,
+};

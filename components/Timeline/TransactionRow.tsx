@@ -1,12 +1,9 @@
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
+import { TransactionTimelineDatum } from "../../providers/TimelineProvider";
 
-const TransactionRow = ({
-  transactionType,
-  timestamp,
-  address,
-  amount,
-  ticker,
+const TransactionRow: React.FC<{ transaction: TransactionTimelineDatum }> = ({
+  transaction: { transactionType, timestamp, address, amount, ticker },
 }) => {
   const isSendTransaction = transactionType === "Send";
   const addressDigits = 5;
