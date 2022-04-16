@@ -1,16 +1,21 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { TransactionsContext } from "../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../providers/TransactionsProvider";
 
 const CoinPicker = () => {
-  const { mode, balances } = useContext(TransactionsContext);
+  const { mode, balances } = useContext(
+    TransactionsContext
+  ) as ITransactionsContext;
 
-  const composeBalance = (balance) => {
+  const composeBalance = (balance: string | undefined) => {
     if (mode == "displayingQR") {
       return "❓";
     }
-    if (mode == "loading" || mode == "unset") {
+    if (mode == "loading") {
       return "✋⏳";
     }
     return balance;

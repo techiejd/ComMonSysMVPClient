@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { Camera } from "expo-camera";
-import { TransactionsContext } from "../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../providers/TransactionsProvider";
 import QRCode from "react-native-qrcode-svg";
 
 const QRInterface = () => {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState<null | boolean>(null);
 
-  const { mode, setMode, userQRValue, process } =
-    useContext(TransactionsContext);
+  const { mode, setMode, userQRValue, process } = useContext(
+    TransactionsContext
+  ) as ITransactionsContext;
 
   useEffect(() => {
     (async () => {
@@ -17,8 +21,8 @@ const QRInterface = () => {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data: qrData }) => {
-    process(qrData);
+  const handleBarCodeScanned = (scanResult: { data: string }) => {
+    process(scanResult.data);
   };
 
   if (hasPermission === null) {

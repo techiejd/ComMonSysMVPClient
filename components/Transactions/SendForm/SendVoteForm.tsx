@@ -1,9 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, FC } from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
-import { TransactionsContext } from "../../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../../providers/TransactionsProvider";
 
-export default function SendVoteForm({ campaignInfo }) {
-  const { send, setMode } = useContext(TransactionsContext);
+const SendVoteForm: FC<{
+  campaignInfo: {
+    address: string;
+    option: string;
+  };
+}> = ({ campaignInfo }) => {
+  const { send, setMode } = useContext(
+    TransactionsContext
+  ) as ITransactionsContext;
 
   return (
     <>
@@ -32,7 +42,9 @@ export default function SendVoteForm({ campaignInfo }) {
       </Pressable>
     </>
   );
-}
+};
+
+export default SendVoteForm;
 
 const styles = StyleSheet.create({
   button: {

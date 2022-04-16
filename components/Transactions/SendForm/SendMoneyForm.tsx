@@ -1,10 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FC } from "react";
 import { Text, StyleSheet, Pressable, TextInput } from "react-native";
-import { TransactionsContext } from "../../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../../providers/TransactionsProvider";
 
-export default function SendMoneyForm({ sendTo }) {
+// Make an Address type.
+const SendMoneyForm: FC<{ sendTo: string }> = ({ sendTo }) => {
   const [amount, setAmount] = useState("");
-  const { send, setMode } = useContext(TransactionsContext);
+  const { send, setMode } = useContext(
+    TransactionsContext
+  ) as ITransactionsContext;
   const submit = () => {
     send({ type: "money", to: sendTo, amount: amount });
     setMode("pending");
@@ -28,11 +34,13 @@ export default function SendMoneyForm({ sendTo }) {
         }}
       />
       <Pressable style={[styles.button, styles.buttonClose]} onPress={submit}>
-        <Text style={styles.textStyle}>Hide Modal</Text>
+        <Text>Hide Modal</Text>
       </Pressable>
     </>
   );
-}
+};
+
+export default SendMoneyForm;
 
 const styles = StyleSheet.create({
   button: {

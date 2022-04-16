@@ -3,13 +3,18 @@ import { View, StyleSheet, Modal } from "react-native";
 import SendMoneyForm from "./SendMoneyForm";
 import SendVoteForm from "./SendVoteForm";
 import ErrorForm from "./ErrorForm";
-import { TransactionsContext } from "../../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../../providers/TransactionsProvider";
 
 export default function SendForm() {
-  const { mode, setMode, sendFormData } = useContext(TransactionsContext);
-  const showSendOn = (data) => {
+  const { mode, setMode, sendFormData } = useContext(
+    TransactionsContext
+  ) as ITransactionsContext;
+  const showSendOn = (data?: typeof sendFormData) => {
     if (mode == "inputtingSendForm") {
-      switch (data.type) {
+      switch (data?.type) {
         case "invalid":
           return <ErrorForm />;
         case "send_vote":
@@ -59,6 +64,5 @@ const styles = StyleSheet.create({
     height: 200,
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
   },
 });

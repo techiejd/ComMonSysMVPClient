@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
-import { TransactionsContext } from "../../../providers/TransactionsProvider";
+import {
+  TransactionsContext,
+  ITransactionsContext,
+} from "../../../providers/TransactionsProvider";
 
 export default function ErrorForm() {
-  const { setMode } = useContext(TransactionsContext);
+  const { setMode } = useContext(TransactionsContext) as ITransactionsContext;
   return (
     <>
       <Text>Error! Seems like you did not scan a ComMonSys QR.</Text>

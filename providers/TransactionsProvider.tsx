@@ -200,4 +200,4 @@ const TransactionsProvider: FC = ({ children }) => {
 };
 
 export default TransactionsProvider;
-export { TransactionsContext };
+export { TransactionsContext, ITransactionsContext };
