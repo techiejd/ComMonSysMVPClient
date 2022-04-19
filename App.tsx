@@ -15,7 +15,7 @@ import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
 
-import {NativeBaseProvider} from 'native-base';
+import { NativeBaseProvider } from "native-base";
 
 const App = () => {
   return (

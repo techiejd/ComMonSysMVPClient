@@ -6,8 +6,8 @@ import {
   ITransactionsContext,
 } from "../../providers/TransactionsProvider";
 
-import {Box, Text} from "native-base";
-import Spacer from "./../Spacer"
+import { Box, Text, Pressable } from "native-base";
+import Spacer from "./../Spacer";
 
 const CoinPicker = () => {
   const { mode, balances } = useContext(
@@ -24,23 +24,31 @@ const CoinPicker = () => {
     return balance;
   };
 
-  return (<>
-    <Spacer/>
-     <Box alignItems="center" style={styles.Box}>
-      <Text style={styles.Text}>Poblado<Text style={styles.endText}>Coin</Text></Text>
-    </Box>
-    <Spacer/>
-    <Picker style={styles.picker} itemStyle={styles.pickerItem}>
-      <Picker.Item
-        label={`₱oblado | $` + composeBalance(balances.posted?.pc)}
-        value="poblado"
-      />
-      <Picker.Item
-        label={`ComMonSys | $` + composeBalance(balances.posted?.coms)}
-        value="commonsys"
-      />
-    </Picker>
-    </>);
+  return (
+    <>
+      <Spacer />
+      <Box alignItems="center" style={styles.Box}>
+        <Text style={styles.Text}>
+          Poblado<Text style={styles.endText}>Coin</Text>
+        </Text>
+      </Box>
+      <Pressable onPress={() => console.log("yoooo")}>
+        <Text style={styles.amount}>
+          ${composeBalance(balances.posted?.pc)}
+        </Text>
+      </Pressable>
+      <Picker style={styles.picker} itemStyle={styles.pickerItem}>
+        <Picker.Item
+          label={`₱oblado | $` + composeBalance(balances.posted?.pc)}
+          value="poblado"
+        />
+        <Picker.Item
+          label={`ComMonSys | $` + composeBalance(balances.posted?.coms)}
+          value="commonsys"
+        />
+      </Picker>
+    </>
+  );
 };
 
 export default CoinPicker;
@@ -52,19 +60,27 @@ const styles = StyleSheet.create({
   pickerItem: {
     color: "black",
   },
-  Box:{
+  Box: {
     width: 215,
     height: 54,
   },
-  Text:{
+  Text: {
     fontStyle: "normal",
     fontWeight: "700",
     fontSize: 36,
-    color: '#F9FAFB',
+    color: "#F9FAFB",
     lineHeight: 60,
   },
-  endText:{
-    // fontWeight: '400',
-    color: '#34D399',
-  }
+  endText: {
+    fontWeight: "400",
+    color: "#34D399",
+  },
+  amount: {
+    fontSize: 36,
+    lineHeight: 60,
+    fontWeight: "700",
+    color: "#34D399",
+    alignItems: "center",
+    right: 0,
+  },
 });
