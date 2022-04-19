@@ -29,7 +29,8 @@
     "react-native-qrcode-svg": "^6.1.2",
     "react-native-svg": "^12.3.0",
     "react-native-webview": "11.15.0",
-    "url-parse": "^1.5.10"
+    "url-parse": "^1.5.10",
+    "react-native-safe-area-context": "3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -6,6 +6,9 @@ import {
   ITransactionsContext,
 } from "../../providers/TransactionsProvider";
 
+import {Box, Text} from "native-base";
+import Spacer from "./../Spacer"
+
 const CoinPicker = () => {
   const { mode, balances } = useContext(
     TransactionsContext
@@ -21,7 +24,12 @@ const CoinPicker = () => {
     return balance;
   };
 
-  return (
+  return (<>
+    <Spacer/>
+     <Box alignItems="center" style={styles.Box}>
+      <Text style={styles.Text}>Poblado<Text style={styles.endText}>Coin</Text></Text>
+    </Box>
+    <Spacer/>
     <Picker style={styles.picker} itemStyle={styles.pickerItem}>
       <Picker.Item
         label={`₱oblado | $` + composeBalance(balances.posted?.pc)}
@@ -32,7 +40,7 @@ const CoinPicker = () => {
         value="commonsys"
       />
     </Picker>
-  );
+    </>);
 };
 
 export default CoinPicker;
@@ -44,4 +52,19 @@ const styles = StyleSheet.create({
   pickerItem: {
     color: "black",
   },
+  Box:{
+    width: 215,
+    height: 54,
+  },
+  Text:{
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: 36,
+    color: '#F9FAFB',
+    lineHeight: 60,
+  },
+  endText:{
+    // fontWeight: '400',
+    color: '#34D399',
+  }
 });
