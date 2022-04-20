@@ -12,8 +12,9 @@
   },
   "//": {
     "dependencies": {
-      "react-native-svg": "TODO(techiejd): Look into whether or not this can be removed.",
-      "@react-native-picker/picker": "Currently, installing with `--legacy-peer-deps`"
+      "react-native-svg": "Used by native base. Errors out on iOS and Android.",
+      "@react-native-picker/picker": "Currently, installing with `--legacy-peer-deps`",
+      "react-native-safe-area-context": "Used by native base. Errors out on Android"
     }
   },
   "dependencies": {
