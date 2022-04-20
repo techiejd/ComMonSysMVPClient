@@ -15,6 +15,8 @@ import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
 
+import { NativeBaseProvider } from "native-base";
+
 const App = () => {
   return (
     <SafeAreaView
@@ -23,17 +25,19 @@ const App = () => {
       }}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <BlockchainProvider>
-          <VoteStoreProvider>
-            <Transactions />
-            <Spacer />
-            <ShopsMap />
-            <Spacer />
-            <TimelineProvider>
-              <Timeline />
-            </TimelineProvider>
-          </VoteStoreProvider>
-        </BlockchainProvider>
+        <NativeBaseProvider>
+          <BlockchainProvider>
+            <VoteStoreProvider>
+              <Transactions />
+              <Spacer />
+              <ShopsMap />
+              <Spacer />
+              <TimelineProvider>
+                <Timeline />
+              </TimelineProvider>
+            </VoteStoreProvider>
+          </BlockchainProvider>
+        </NativeBaseProvider>
       </ScrollView>
     </SafeAreaView>
   );
@@ -46,5 +50,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
+    backgroundColor: "#D8D8D8",
   },
 });

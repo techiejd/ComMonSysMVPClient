@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { Camera } from "expo-camera";
+import QRCode from "react-native-qrcode-svg";
 import {
   TransactionsContext,
   ITransactionsContext,
 } from "../../providers/TransactionsProvider";
-import QRCode from "react-native-qrcode-svg";
 
 const QRInterface = () => {
   const [hasPermission, setHasPermission] = useState<null | boolean>(null);
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   qrLike: {
     width: 200,
     height: 200,
+    borderColor: "#34D399",
   },
   full: {
     width: "100%",
