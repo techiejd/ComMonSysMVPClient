@@ -1,8 +1,8 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect } from "react";
 // TODO(techiejd): Hack. Figure out what to do about these random values. Calling .random with this takes too long.
 // import "react-native-get-random-values";
 import "@ethersproject/shims";
-import { ethers } from "ethers";
+import { ethers, ContractTransaction } from "ethers";
 import { PRIVATEKEY } from "@env";
 import ERC20ABI from "../constants/ERC20ABI";
 import FaucetABI from "../constants/FaucetABI";
@@ -25,7 +25,7 @@ interface IBlockchainContext {
     | ethers.BigNumber;
   gasLimit: number;
   isAddress: (address: string) => boolean;
-  onboard: () => Promise<{ wait: () => Promise<any> }>;
+  onboard: () => Promise<ContractTransaction>;
 }
 
 const BlockchainContext = React.createContext<IBlockchainContext | undefined>(
@@ -33,7 +33,9 @@ const BlockchainContext = React.createContext<IBlockchainContext | undefined>(
 );
 const gasLimit = GasLimit;
 
-const BlockchainProvider: FC = ({ children }) => {
+const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [wallet, setWallet] = useState<ethers.Wallet | undefined>(undefined);
   const provider = new ethers.providers.JsonRpcProvider({
     url: "https://137.184.238.79/rpc", // ComMonSys MVP rpc
@@ -69,7 +71,7 @@ const BlockchainProvider: FC = ({ children }) => {
   };
 
   // TODO(techijd): Get types from ethers. Avoid bugs.
-  const onboard = (): Promise<{ wait: () => Promise<any> }> => {
+  const onboard = (): Promise<ContractTransaction> => {
     // Literally just need it cause Ethereum network doesn't accept transactions if the person can't pay for fees.
     const signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
     const faucetContract = new ethers.Contract(
@@ -84,7 +86,7 @@ const BlockchainProvider: FC = ({ children }) => {
     const ethAmount = convert({ to: "wei", amount: "120000" });
     return faucetContract
       .requestEthFor(wallet?.address, ethAmount)
-      .then((txResult: { wait: () => Promise<any> }) => {
+      .then((txResult: ContractTransaction) => {
         return txResult.wait().then(() => {
           return faucetContract.requestTokensFor(
             wallet?.address,

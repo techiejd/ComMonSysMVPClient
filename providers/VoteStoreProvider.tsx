@@ -10,7 +10,9 @@ const VoteStoreContext = React.createContext<IVoteStoreContext | undefined>(
   undefined
 );
 
-const VoteStoreProvider: React.FC = ({ children }) => {
+const VoteStoreProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [vote, setVote] = useState<number | undefined>(undefined); // 0 || 1 || 2 hardcoding three options only ;).
 
   return (
