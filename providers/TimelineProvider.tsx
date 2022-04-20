@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect, FC } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import moment from "moment";
 import { BlockchainContext, IBlockchainContext } from "./BlockchainProvider";
 import { VoteStoreContext, IVoteStoreContext } from "./VoteStoreProvider";
-import { EventFilter, Event, BigNumberish } from "ethers";
+import { EventFilter, Event } from "ethers";
 
 type TransactionTimelineDatum = {
   type: "transaction";
@@ -55,7 +55,9 @@ const messages: Array<CommunityMessageTimelineDatum> = [
   },
 ];
 
-const TimelineProvider: FC = ({ children }) => {
+const TimelineProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [timelineData, setTimelineData] = useState(new Array<TimelineDatum>());
   const { wallet, communityCoinContract, convert } = useContext(
     BlockchainContext

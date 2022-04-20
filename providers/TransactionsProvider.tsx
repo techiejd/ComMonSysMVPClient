@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, FC } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { BlockchainContext, IBlockchainContext } from "./BlockchainProvider";
 import { VoteStoreContext, IVoteStoreContext } from "./VoteStoreProvider";
 import URL from "url-parse";
@@ -56,7 +56,9 @@ const TransactionsContext = React.createContext<
   ITransactionsContext | undefined
 >(undefined);
 
-const TransactionsProvider: FC = ({ children }) => {
+const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const {
     wallet,
     communityCoinContract,
