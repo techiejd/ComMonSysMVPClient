@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import {
@@ -11,6 +11,8 @@ import {
   TransactionsContext,
   ITransactionsContext,
 } from "../../providers/TransactionsProvider";
+import EyeOpen from "../../assets/EyeOpen";
+import EyeClose from "../../assets/EyeClose";
 
 
 const CoinPicker = () => {
@@ -28,6 +30,8 @@ const CoinPicker = () => {
     return balance;
   };
 
+  const [showBalance,setShowBalance]=useState(true);
+
   return (
     <>
       <Spacer />
@@ -36,10 +40,15 @@ const CoinPicker = () => {
           Poblado<Text style={styles.endText}>Coin</Text>
         </Text>
       </Box>
-      <Pressable onPress={() => console.log("yoooo")}>
-        <Text style={styles.amount}>
-          ${composeBalance(balances.posted?.pc)}
-        </Text>
+      <Pressable onPress={() => setShowBalance(!showBalance)}>
+        {showBalance ? (        
+          <Text style={styles.amount}>
+          <EyeOpen/>
+            ₱{composeBalance(balances.posted?.pc)}
+          </Text>
+          ):(
+            <EyeClose/>
+          )}
       </Pressable>
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
