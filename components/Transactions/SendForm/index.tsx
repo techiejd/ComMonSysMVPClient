@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, StyleSheet, Modal } from "react-native";
+import { Modal } from "native-base";
 import SendMoneyForm from "./SendMoneyForm";
 import SendVoteForm from "./SendVoteForm";
 import ErrorForm from "./ErrorForm";
@@ -9,60 +9,52 @@ import {
 } from "../../../providers/TransactionsProvider";
 
 export default function SendForm() {
-  const { mode, setMode, sendFormData } = useContext(
+  // TODO(techiejd): Look into useDisclose.
+  const closeForm = () => setMode("inputtingQR");
+  const { mode, setMode, sendFormData, send } = useContext(
     TransactionsContext
   ) as ITransactionsContext;
   const showSendOn = (data?: typeof sendFormData) => {
     if (mode == "inputtingSendForm") {
       switch (data?.type) {
         case "invalid":
-          return <ErrorForm />;
+          return <ErrorForm modalContext={Modal} closeForm={closeForm} />;
         case "send_vote":
-          return <SendVoteForm campaignInfo={data.campaignInfo} />;
+          return (
+            <SendVoteForm
+              campaignInfo={data.campaignInfo}
+              modalContext={Modal}
+              closeForm={closeForm}
+              send={send}
+            />
+          );
         case "send_money":
-          return <SendMoneyForm sendTo={data.sendTo} />;
+          return (
+            <SendMoneyForm
+              sendTo={data.sendTo}
+              modalContext={Modal}
+              closeForm={closeForm}
+              send={send}
+            />
+          );
       }
     }
   };
 
+  // TODO(jddominguez): Get it to look like from figma.
+
   return (
     <Modal
-      animationType="slide"
-      transparent={true}
-      visible={mode == "inputtingSendForm"}
-      onRequestClose={() => {
+      isOpen={mode === "inputtingSendForm"}
+      onClose={() => {
+        console.log("I was requested to close.");
         setMode("inputtingQR");
       }}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>{showSendOn(sendFormData)}</View>
-      </View>
+      <Modal.Content maxWidth="400px">
+        <Modal.CloseButton />
+        {showSendOn(sendFormData)}
+      </Modal.Content>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    height: 200,
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-});

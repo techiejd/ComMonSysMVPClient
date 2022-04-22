@@ -1,54 +1,42 @@
-import React, { useState, useContext, FC } from "react";
-import { Text, StyleSheet, Pressable, TextInput } from "react-native";
-import {
-  TransactionsContext,
-  ITransactionsContext,
-} from "../../../providers/TransactionsProvider";
+import React, { useState } from "react";
+import { Transaction } from "../../../providers/TransactionsProvider";
+import { Button, Modal, Input } from "native-base";
 
 // Make an Address type.
-const SendMoneyForm: FC<{ sendTo: string }> = ({ sendTo }) => {
+const SendMoneyForm: React.FC<{
+  sendTo: string;
+  send: (transaction: Transaction) => void;
+  modalContext: typeof Modal;
+  closeForm: () => void;
+}> = ({ sendTo, send, modalContext, closeForm }) => {
   const [amount, setAmount] = useState("");
-  const { send, setMode } = useContext(
-    TransactionsContext
-  ) as ITransactionsContext;
   const submit = () => {
     send({ type: "money", to: sendTo, amount: amount });
-    setMode("pending");
   };
   return (
     <>
-      <Text>Sending</Text>
-      <Text>{sendTo}</Text>
-      <TextInput
-        keyboardType="number-pad"
-        onChangeText={(inputAmount) =>
-          setAmount(inputAmount.replace(/\D/g, ""))
-        }
-        onSubmitEditing={submit}
-        value={amount}
-        style={{
-          width: 200,
-          height: 40,
-          borderWidth: 1,
-          borderColor: "black",
-        }}
-      />
-      <Pressable style={[styles.button, styles.buttonClose]} onPress={submit}>
-        <Text>Hide Modal</Text>
-      </Pressable>
+      <modalContext.Header>Sending money</modalContext.Header>
+      <Modal.Body>
+        To: {sendTo}
+        <Input
+          keyboardType="number-pad"
+          onChangeText={(inputAmount) =>
+            setAmount(inputAmount.replace(/\D/g, ""))
+          }
+          onSubmitEditing={submit}
+          value={amount}
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button.Group space={2}>
+          <Button variant="ghost" colorScheme="blueGray" onPress={closeForm}>
+            Cancel
+          </Button>
+          <Button onPress={submit}>Send</Button>
+        </Button.Group>
+      </Modal.Footer>
     </>
   );
 };
 
 export default SendMoneyForm;
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-});

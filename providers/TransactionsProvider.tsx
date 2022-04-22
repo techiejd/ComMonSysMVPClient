@@ -119,7 +119,7 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
             });
           });
         }
-        return;
+        break;
       case "money":
         communityCoinContract
           .transfer(tx.to, convertMoney({ to: "wei", amount: tx.amount }), {
@@ -131,8 +131,9 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
             });
           })
           .catch((error: any) => alert(error));
-        return;
+        break;
     }
+    setMode("pending");
   };
 
   function transform(qrData: string): SendFormData {
@@ -202,4 +203,4 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export default TransactionsProvider;
-export { TransactionsContext, ITransactionsContext };
+export { TransactionsContext, ITransactionsContext, Transaction };

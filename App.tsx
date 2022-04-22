@@ -6,6 +6,8 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
+import { SSRProvider } from "@react-aria/ssr";
+import { NativeBaseProvider } from "native-base";
 
 import Transactions from "./components/Transactions";
 import ShopsMap from "./components/Shops";
@@ -15,31 +17,31 @@ import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
 
-import { NativeBaseProvider } from "native-base";
-
 const App = () => {
   return (
-    <SafeAreaView
-      style={{
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
-      <ScrollView contentContainerStyle={styles.container}>
-        <NativeBaseProvider>
-          <BlockchainProvider>
-            <VoteStoreProvider>
-              <Transactions />
-              <Spacer />
-              <ShopsMap />
-              <Spacer />
-              <TimelineProvider>
-                <Timeline />
-              </TimelineProvider>
-            </VoteStoreProvider>
-          </BlockchainProvider>
-        </NativeBaseProvider>
-      </ScrollView>
-    </SafeAreaView>
+    <SSRProvider>
+      <NativeBaseProvider>
+        <SafeAreaView
+          style={{
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          }}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <BlockchainProvider>
+              <VoteStoreProvider>
+                <Transactions />
+                <Spacer />
+                <ShopsMap />
+                <Spacer />
+                <TimelineProvider>
+                  <Timeline />
+                </TimelineProvider>
+              </VoteStoreProvider>
+            </BlockchainProvider>
+          </ScrollView>
+        </SafeAreaView>
+      </NativeBaseProvider>
+    </SSRProvider>
   );
 };
 
