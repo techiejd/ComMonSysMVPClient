@@ -26,8 +26,8 @@ const CoinPicker = () => {
   return (
     <>
       <Spacer />
-      <Box alignItems="center" style={styles.Box}>
-        <Text style={styles.Text}>
+      <Box alignItems="center" style={styles.titleSize}>
+        <Text style={styles.titleText}>
           Poblado<Text style={styles.endText}>Coin</Text>
         </Text>
       </Box>
@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
   pickerItem: {
     color: "black",
   },
-  Box: {
+  titleSize: {
     width: 215,
     height: 54,
   },
-  Text: {
+  titleText: {
     fontStyle: "normal",
     fontWeight: "700",
     fontSize: 36,
