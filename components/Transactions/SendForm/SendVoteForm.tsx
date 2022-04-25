@@ -1,58 +1,44 @@
-import React, { useContext, FC } from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
-import {
-  TransactionsContext,
-  ITransactionsContext,
-} from "../../../providers/TransactionsProvider";
+import React, { FC } from "react";
+import { Transaction } from "../../../providers/TransactionsProvider";
+import { Button, Modal } from "native-base";
 
 const SendVoteForm: FC<{
   campaignInfo: {
     address: string;
     option: string;
   };
-}> = ({ campaignInfo }) => {
-  const { send, setMode } = useContext(
-    TransactionsContext
-  ) as ITransactionsContext;
-
+  modalContext: typeof Modal;
+  closeForm: () => void;
+  send: (transaction: Transaction) => void;
+}> = ({ campaignInfo, modalContext, closeForm, send }) => {
   return (
     <>
-      <Text>Confirm vote for</Text>
-      <Text>Campaign address:</Text>
-      <Text>{campaignInfo.address}</Text>
-      <Text>Option: {campaignInfo.option}</Text>
-      <Pressable
-        style={[styles.button, styles.buttonClose]}
-        onPress={() => {
-          send({
-            type: "vote",
-            to: campaignInfo.address,
-            choice: campaignInfo.option,
-          });
-          setMode("pending");
-        }}
-      >
-        <Text>Yes</Text>
-      </Pressable>
-      <Pressable
-        style={[styles.button, styles.buttonClose]}
-        onPress={() => setMode("inputtingQR")}
-      >
-        <Text>Cancel?</Text>
-      </Pressable>
+      <modalContext.Header>Send your vote!</modalContext.Header>
+      <Modal.Body>
+        Your vote is important. Please confirm your vote for:
+        {campaignInfo.address}
+        Option: {campaignInfo.option}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button.Group space={2}>
+          <Button variant="ghost" colorScheme="blueGray" onPress={closeForm}>
+            Cancel
+          </Button>
+          <Button
+            onPress={() => {
+              send({
+                type: "vote",
+                to: campaignInfo.address,
+                choice: campaignInfo.option,
+              });
+            }}
+          >
+            Send
+          </Button>
+        </Button.Group>
+      </Modal.Footer>
     </>
   );
 };
 
 export default SendVoteForm;
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-});
