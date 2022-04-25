@@ -15,6 +15,7 @@ import {
 interface IBlockchainContext {
   wallet: ethers.Wallet | undefined;
   communityCoinContract: ethers.Contract;
+  faucetContract: ethers.Contract;
   convert: ({
     to,
     amount,
@@ -25,13 +26,11 @@ interface IBlockchainContext {
     | ethers.BigNumber;
   gasLimit: number;
   isAddress: (address: string) => boolean;
-  onboard: () => Promise<ContractTransaction>;
 }
 
 const BlockchainContext = React.createContext<IBlockchainContext | undefined>(
   undefined
 );
-const gasLimit = GasLimit;
 
 const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -41,6 +40,13 @@ const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({
     url: "https://137.184.238.79/rpc", // ComMonSys MVP rpc
     timeout: 15000,
   });
+  // Literally just need it cause Ethereum network doesn't accept transactions if the person can't pay for fees.
+  const signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
+  const faucetContract = new ethers.Contract(
+    FaucetAdress,
+    FaucetABI,
+    signerWithMoney
+  );
 
   useEffect(() => {
     // TODO(techiejd): Create and save the users' address.
@@ -70,41 +76,15 @@ const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // TODO(techijd): Get types from ethers. Avoid bugs.
-  const onboard = (): Promise<ContractTransaction> => {
-    // Literally just need it cause Ethereum network doesn't accept transactions if the person can't pay for fees.
-    const signerWithMoney = new ethers.Wallet(PRIVATEKEY, provider);
-    const faucetContract = new ethers.Contract(
-      FaucetAdress,
-      FaucetABI,
-      signerWithMoney
-    );
-    const communityCoinAmount = convert({
-      to: "wei",
-      amount: "25000",
-    });
-    const ethAmount = convert({ to: "wei", amount: "120000" });
-    return faucetContract
-      .requestEthFor(wallet?.address, ethAmount)
-      .then((txResult: ContractTransaction) => {
-        return txResult.wait().then(() => {
-          return faucetContract.requestTokensFor(
-            wallet?.address,
-            communityCoinAmount
-          );
-        });
-      });
-  };
-
   return (
     <BlockchainContext.Provider
       value={{
         wallet,
         communityCoinContract,
+        faucetContract,
         convert,
-        gasLimit,
+        gasLimit: GasLimit,
         isAddress: ethers.utils.isAddress,
-        onboard,
       }}
     >
       {children}
@@ -113,4 +93,4 @@ const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export default BlockchainProvider;
-export { BlockchainContext, IBlockchainContext };
+export { BlockchainContext, IBlockchainContext, ContractTransaction };

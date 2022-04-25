@@ -1,5 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
-import { BlockchainContext, IBlockchainContext } from "./BlockchainProvider";
+import {
+  BlockchainContext,
+  IBlockchainContext,
+  ContractTransaction,
+} from "./BlockchainProvider";
 import { VoteStoreContext, IVoteStoreContext } from "./VoteStoreProvider";
 import URL from "url-parse";
 
@@ -62,10 +66,10 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
   const {
     wallet,
     communityCoinContract,
+    faucetContract,
     convert: convertMoney,
     gasLimit,
     isAddress,
-    onboard,
   } = useContext(BlockchainContext) as IBlockchainContext;
   const { vote, setVote } = useContext(VoteStoreContext) as IVoteStoreContext;
 
@@ -109,22 +113,55 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // { type, to, amount, choice }
   const send = (tx: Transaction) => {
+    // Necessary so we don't get Error: cannot estimate gas.
+    // See https://docs.ethers.io/v5/troubleshooting/errors/#help-UNPREDICTABLE_GAS_LIMIT.
+    const gasLimitOverride = {
+      gasLimit: gasLimit,
+    };
+
     switch (tx.type) {
       case "vote":
         if (vote == null) {
           setVote(parseInt(tx.choice));
-          onboard().then((txResult) => {
-            txResult.wait().then((result) => {
-              updateBalances();
-            });
+
+          // TODO(jddominguez): Un-hardcode this.
+          const communityCoinAmount = convertMoney({
+            to: "wei",
+            amount: "25000",
           });
+          const ethAmount = convertMoney({ to: "wei", amount: "120000" });
+
+          console.log(wallet?.address);
+
+          faucetContract
+            .requestEthFor(wallet?.address, ethAmount, gasLimitOverride)
+            .then((txResult: ContractTransaction) => {
+              console.log("bout to wait on request eth");
+              txResult.wait().then(() => {
+                console.log("Yoooo this one ain't revert?");
+                faucetContract
+                  .requestTokensFor(
+                    wallet?.address,
+                    communityCoinAmount,
+                    gasLimitOverride
+                  )
+                  .then((txResult: ContractTransaction) => {
+                    console.log("Not going to lie idk what's reverting");
+                    txResult.wait().then(() => {
+                      updateBalances();
+                    });
+                  });
+              });
+            });
         }
         return;
       case "money":
         communityCoinContract
-          .transfer(tx.to, convertMoney({ to: "wei", amount: tx.amount }), {
-            gasLimit: gasLimit,
-          })
+          .transfer(
+            tx.to,
+            convertMoney({ to: "wei", amount: tx.amount }),
+            gasLimitOverride
+          )
           .then((txResult: { wait: () => Promise<any> }) => {
             txResult.wait().then((result) => {
               updateBalances();

@@ -1,17 +1,12 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import {
-   Box,
-   Text, 
-   Pressable, 
-   } from "native-base";
+import { Box, Text, Pressable } from "native-base";
 import Spacer from "./../Spacer";
 import {
   TransactionsContext,
   ITransactionsContext,
 } from "../../providers/TransactionsProvider";
-
 
 const CoinPicker = () => {
   const { mode, balances } = useContext(
