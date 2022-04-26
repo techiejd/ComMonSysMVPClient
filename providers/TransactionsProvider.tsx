@@ -131,14 +131,10 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
           });
           const ethAmount = convertMoney({ to: "wei", amount: "120000" });
 
-          console.log(wallet?.address);
-
           faucetContract
             .requestEthFor(wallet?.address, ethAmount, gasLimitOverride)
             .then((txResult: ContractTransaction) => {
-              console.log("bout to wait on request eth");
               txResult.wait().then(() => {
-                console.log("Yoooo this one ain't revert?");
                 faucetContract
                   .requestTokensFor(
                     wallet?.address,
@@ -146,7 +142,6 @@ const TransactionsProvider: React.FC<{ children: React.ReactNode }> = ({
                     gasLimitOverride
                   )
                   .then((txResult: ContractTransaction) => {
-                    console.log("Not going to lie idk what's reverting");
                     txResult.wait().then(() => {
                       updateBalances();
                     });

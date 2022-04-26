@@ -47,7 +47,6 @@ export default function SendForm() {
     <Modal
       isOpen={mode === "inputtingSendForm"}
       onClose={() => {
-        console.log("I was requested to close.");
         setMode("inputtingQR");
       }}
     >

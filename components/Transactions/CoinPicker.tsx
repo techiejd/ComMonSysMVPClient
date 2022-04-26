@@ -31,11 +31,7 @@ const CoinPicker = () => {
           Poblado<Text style={styles.endText}>Coin</Text>
         </Text>
       </Box>
-      <Pressable onPress={() => console.log("yoooo")}>
-        <Text style={styles.amount}>
-          ${composeBalance(balances.posted?.pc)}
-        </Text>
-      </Pressable>
+      <Text style={styles.amount}>${composeBalance(balances.posted?.pc)}</Text>
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
           label={`₱oblado | $` + composeBalance(balances.posted?.pc)}
