@@ -13,23 +13,10 @@ const ErrorForm: React.FC<{
         Error! Seems like you did not scan a ComMonSys QR.
       </modalContext.Body>
       <modalContext.Footer>
-        <Button.Group space={1}>
-          <Button onPress={closeForm}>Ok</Button>
-        </Button.Group>
+        <Button onPress={closeForm}>Ok</Button>
       </modalContext.Footer>
     </>
   );
 };
 
 export default ErrorForm;
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-});

@@ -9,11 +9,12 @@ import Spacer from "./components/Spacer";
 import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
+import Theme from "./Theme";
 
 const App = () => {
   return (
     <SSRProvider>
-      <NativeBaseProvider>
+      <NativeBaseProvider theme={Theme}>
         <Box safeArea>
           <ScrollView
             backgroundColor="#D8D8D8"

@@ -21,7 +21,7 @@ const SendVoteForm: FC<{
       </Modal.Body>
       <Modal.Footer>
         <Button.Group space={2}>
-          <Button variant="ghost" colorScheme="blueGray" onPress={closeForm}>
+          <Button variant="ghost" onPress={closeForm}>
             Cancel
           </Button>
           <Button

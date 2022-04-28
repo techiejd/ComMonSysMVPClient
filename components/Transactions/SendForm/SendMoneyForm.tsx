@@ -24,12 +24,13 @@ const SendMoneyForm: React.FC<{
             setAmount(inputAmount.replace(/\D/g, ""))
           }
           onSubmitEditing={submit}
+          autoFocus={true}
           value={amount}
         />
       </Modal.Body>
       <Modal.Footer>
         <Button.Group space={2}>
-          <Button variant="ghost" colorScheme="blueGray" onPress={closeForm}>
+          <Button variant="ghost" onPress={closeForm}>
             Cancel
           </Button>
           <Button onPress={submit}>Send</Button>
