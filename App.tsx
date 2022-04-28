@@ -22,14 +22,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <Box safeArea>
-        <ScrollView
-          backgroundColor="#D8D8D8"
-          contentContainerStyle={{
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
+        <ScrollView>
           <BlockchainProvider>
             <VoteStoreProvider>
               <Title />

@@ -50,6 +50,18 @@ const Theme = extendTheme({
         },
       },
     },
+    ScrollView: {
+      baseStyle: {
+        _dark: {
+          bg: "coolGray.800",
+        },
+        contentContainerStyle: {
+          flexDirection: "column",
+          justifyContent: "space-around",
+          alignItems: "center",
+        },
+      },
+    },
   },
   fontConfig: {
     Ubuntu: {
