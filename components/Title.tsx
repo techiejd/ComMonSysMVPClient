@@ -7,9 +7,12 @@ const Title = () => {
   return (
     <>
       <Spacer />
-      <Box alignItems="center" style={styles.size}>
-        <Text style={styles.startText}>
-          Poblado<Text style={styles.endText}>Coin</Text>
+      <Box flexDirection="row" justifyContent="center" style={styles.size}>
+        <Text fontWeight={700} color={"coolGray.50"} style={styles.title}>
+          Poblado
+        </Text>
+        <Text fontWeight={400} color={"emerald.400"} style={styles.title}>
+          Coin
         </Text>
       </Box>
     </>
@@ -23,15 +26,9 @@ const styles = StyleSheet.create({
     width: 215,
     height: 54,
   },
-  startText: {
-    fontStyle: "normal",
-    fontWeight: "700",
+  title: {
     fontSize: 36,
-    color: "#F9FAFB",
     lineHeight: 60,
-  },
-  endText: {
-    fontWeight: "400",
-    color: "#34D399",
+    fontStyle: "normal",
   },
 });
