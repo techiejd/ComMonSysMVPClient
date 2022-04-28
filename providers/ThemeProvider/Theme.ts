@@ -51,6 +51,33 @@ const Theme = extendTheme({
       },
     },
   },
+  fontConfig: {
+    Ubuntu: {
+      300: {
+        normal: "Ubuntu_300Light",
+        italic: "Ubuntu_300Light_Italic",
+      },
+      400: {
+        normal: "Ubuntu_400Regular",
+        italic: "Ubuntu_400Regular_Italic",
+      },
+      500: {
+        normal: "Ubuntu_500Medium",
+        italic: "Ubuntu_500Medium_Italic",
+      },
+      700: {
+        normal: "Ubuntu_700Bold",
+        italic: "Ubuntu_700Bold_Italic",
+      },
+    },
+  },
+
+  // Make sure values below matches any of the keys in `fontConfig`
+  fonts: {
+    heading: "Ubuntu",
+    body: "Ubuntu",
+    mono: "Ubuntu",
+  },
 });
 
 export default Theme;

@@ -1,6 +1,5 @@
 import React from "react";
-import { SSRProvider } from "@react-aria/ssr";
-import { NativeBaseProvider, Box, ScrollView } from "native-base";
+import { Box, ScrollView } from "native-base";
 
 import Transactions from "./components/Transactions";
 import ShopsMap from "./components/Shops";
@@ -10,37 +9,42 @@ import Title from "./components/Title";
 import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
-import Theme from "./Theme";
+import ThemeProvider, { useThemeLoaded } from "./providers/ThemeProvider";
+import AppLoading from "expo-app-loading";
 
 const App = () => {
+  let themeLoaded = useThemeLoaded();
+
+  if (!themeLoaded) {
+    return <AppLoading />;
+  }
+
   return (
-    <SSRProvider>
-      <NativeBaseProvider theme={Theme}>
-        <Box safeArea>
-          <ScrollView
-            backgroundColor="#D8D8D8"
-            contentContainerStyle={{
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-            }}
-          >
-            <BlockchainProvider>
-              <VoteStoreProvider>
-                <Title />
-                <Transactions />
-                <Spacer />
-                <ShopsMap />
-                <Spacer />
-                <TimelineProvider>
-                  <Timeline />
-                </TimelineProvider>
-              </VoteStoreProvider>
-            </BlockchainProvider>
-          </ScrollView>
-        </Box>
-      </NativeBaseProvider>
-    </SSRProvider>
+    <ThemeProvider>
+      <Box safeArea>
+        <ScrollView
+          backgroundColor="#D8D8D8"
+          contentContainerStyle={{
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <BlockchainProvider>
+            <VoteStoreProvider>
+              <Title />
+              <Transactions />
+              <Spacer />
+              <ShopsMap />
+              <Spacer />
+              <TimelineProvider>
+                <Timeline />
+              </TimelineProvider>
+            </VoteStoreProvider>
+          </BlockchainProvider>
+        </ScrollView>
+      </Box>
+    </ThemeProvider>
   );
 };
 
