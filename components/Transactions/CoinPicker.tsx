@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { Box, Text, Pressable } from "native-base";
-import Spacer from "./../Spacer";
+import { Text } from "native-base";
 import {
   TransactionsContext,
   ITransactionsContext,
@@ -25,12 +24,6 @@ const CoinPicker = () => {
 
   return (
     <>
-      <Spacer />
-      <Box alignItems="center" style={styles.titleSize}>
-        <Text style={styles.titleText}>
-          Poblado<Text style={styles.endText}>Coin</Text>
-        </Text>
-      </Box>
       <Text style={styles.amount}>${composeBalance(balances.posted?.pc)}</Text>
       <Picker style={styles.picker} itemStyle={styles.pickerItem}>
         <Picker.Item
@@ -54,21 +47,6 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     color: "black",
-  },
-  titleSize: {
-    width: 215,
-    height: 54,
-  },
-  titleText: {
-    fontStyle: "normal",
-    fontWeight: "700",
-    fontSize: 36,
-    color: "#F9FAFB",
-    lineHeight: 60,
-  },
-  endText: {
-    fontWeight: "400",
-    color: "#34D399",
   },
   amount: {
     fontSize: 36,

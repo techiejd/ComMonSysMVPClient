@@ -6,6 +6,7 @@ import Transactions from "./components/Transactions";
 import ShopsMap from "./components/Shops";
 import Timeline from "./components/Timeline";
 import Spacer from "./components/Spacer";
+import Title from "./components/Title";
 import BlockchainProvider from "./providers/BlockchainProvider";
 import TimelineProvider from "./providers/TimelineProvider";
 import VoteStoreProvider from "./providers/VoteStoreProvider";
@@ -26,6 +27,7 @@ const App = () => {
           >
             <BlockchainProvider>
               <VoteStoreProvider>
+                <Title />
                 <Transactions />
                 <Spacer />
                 <ShopsMap />
