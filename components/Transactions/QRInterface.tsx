@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { Text, Pressable, Center } from "native-base";
+import { StyleSheet } from "react-native";
 import { Camera } from "expo-camera";
 import QRCode from "react-native-qrcode-svg";
 import {
@@ -33,7 +34,13 @@ const QRInterface = () => {
   }
 
   return (
-    <View style={styles.qrLike}>
+    <Center
+      overflow="hidden"
+      borderWidth="4px"
+      borderRadius="16px"
+      borderColor="emerald.400"
+      style={styles.qrLike}
+    >
       {mode == "inputtingQR" ? (
         <Camera
           onBarCodeScanned={handleBarCodeScanned}
@@ -49,15 +56,22 @@ const QRInterface = () => {
         </Camera>
       ) : (
         <Pressable
-          style={styles.full}
+          style={[
+            styles.full,
+            {
+              alignItems: "center",
+              justifyContent: "center",
+            },
+          ]}
+          bg="emerald.400"
           onPress={() => {
             setMode("inputtingQR");
           }}
         >
-          <QRCode value={userQRValue} size={200} />
+          <QRCode value={userQRValue} size={190} />
         </Pressable>
       )}
-    </View>
+    </Center>
   );
 };
 
@@ -67,7 +81,6 @@ const styles = StyleSheet.create({
   qrLike: {
     width: 200,
     height: 200,
-    borderColor: "#34D399",
   },
   full: {
     width: "100%",
